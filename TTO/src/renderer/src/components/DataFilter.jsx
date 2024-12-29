@@ -55,9 +55,30 @@ const DataFilter = () => {
         const newFormState = { ...formState };
         if (["isArge", 'isArgeBackStatus', 'isSurdurulebilirlik', 'isProtocolSigned', 'isProtocolSigned'].includes(e.target.name)) {
             newFormState[e.target.name] = e.target.checked;
+            if(e.target.checked)
+            {
+                Filter[e.target.name] = e.target.checked
+            }
+            else
+            {
+                let newFilter = {...Filter}
+                delete newFilter[e.target.name]
+                setFilter(newFilter)
+            }
         }
         else {
             newFormState[e.target.name] = e.target.value
+
+            if(e.target.value !== "")
+                {
+                    Filter[e.target.name] = e.target.value
+                }
+                else
+                {
+                    let newFilter = {...Filter}
+                    delete newFilter[e.target.name]
+                    setFilter(newFilter)
+                }
         }
         setFormState(newFormState);
     }

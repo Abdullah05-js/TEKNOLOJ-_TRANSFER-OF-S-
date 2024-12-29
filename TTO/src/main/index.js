@@ -3,7 +3,8 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import connectDB from './Backend/DB/ConnectDB'
-import { AuthUser,CreateAcccount} from './Backend/Services/UsersService'
+import { AuthUser, CreateAcccount } from './Backend/Services/UsersService.js'
+import { SearchConversations ,SetConversation} from "./Backend/Services/ConversationsService.js"
 import path from 'path'
 
 function createWindow() {
@@ -11,7 +12,7 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
-    icon:icon,
+    icon: icon,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -60,7 +61,7 @@ app.whenReady().then(async () => {
     console.log(error);
   }
 
-
+  //------------------------------------------------------------------------Selçuk burda route tanımları .handle kullanımı frontend invoke kullanılır ordan gelen veri data parametresine gelir return kullanrak ta response yapabilirsin ve yapmak zorundasın frontend bekliyor çünkü
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
@@ -70,6 +71,27 @@ app.whenReady().then(async () => {
     console.log(data);
     return await AuthUser(data);
   })
+
+
+  ipcMain.handle("Filter", async (event, data) => {
+
+    console.log(data);
+
+    return await SearchConversations(data);
+  })
+
+
+
+ipcMain.handle("SetConversation", async (event, data) => {
+
+    console.log(data);
+
+    return await SetConversation(data);
+  })
+
+
+
+  //---------------------------------------------------------------------------
 
   createWindow();
 
