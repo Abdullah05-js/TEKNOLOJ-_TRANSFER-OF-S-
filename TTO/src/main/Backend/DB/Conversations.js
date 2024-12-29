@@ -40,10 +40,7 @@ const ConversationSchema = mongoose.Schema(
         },
         ACCOUNT:{
             type:String
-        },
-        Month:{
-            type:String
-        },
+        }
     }
 )
 

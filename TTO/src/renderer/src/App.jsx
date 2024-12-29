@@ -3,7 +3,7 @@ import NavBar from "./components/NavBar"
 import Login from "./components/Login"
 import Dataisertaion from "./components/Dataİnsertaion"
 import HomePage from "./components/HomePage"
-import DataFilter from "./components/Uİ/DataFilter"
+import DataFilter from "./components/DataFilter"
 
 
 function App() {
