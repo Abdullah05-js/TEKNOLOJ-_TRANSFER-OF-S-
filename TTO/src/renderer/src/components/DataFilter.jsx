@@ -71,17 +71,22 @@ const DataFilter = () => {
         FetchData();
     }, []);
 
-  
+    useEffect(() => {
+        FetchData();
+    },[formStateData])
+
+
 
 
 
     const ReturnList = Data.map((e, index) => {
         return (
             <tr key={index}>
-                <td>{index + 1}</td>
+
+                <td className='w-9'>{index + 1}</td>
                 {
                     Object.keys(Filter).map(key => {
-                        return <td className=''>{e[key]}</td>
+                        return <td >{e[key] === true ? "var" : e[key] === false ? "yok" : e[key]}</td>
                     })
                 }
             </tr>
@@ -103,11 +108,10 @@ const DataFilter = () => {
         setFormState(newFormState);
     }
 
-
     const handleData = (e) => {
         const newFormState = { ...formStateData };
 
-        if (["isAge", 'isArgeBackStatus', 'isSurdurulebilirlik', 'isProtocolSigned', 'isProtocolSigned'].includes(e.target.name)) {
+        if (["isArge", 'isArgeBackStatus', 'isSurdurulebilirlik', 'isProtocolSigned'].includes(e.target.name)) {
             newFormState[e.target.name] = e.target.checked;
             if (e.target.checked) {
                 FilterData[e.target.name] = e.target.checked
@@ -254,7 +258,14 @@ const DataFilter = () => {
                         <select onChange={handleData} name='AcademicName' value={formStateData.AcademicName} className='min-w-28 p-2 border-2 border-white rounded-lg outline-none focus:border-2 focus:border-green-300 bg-black text-white'>
                             <option value="">Hepsi</option>
                             {Akademiks.map((e, index) => {
-                                return <option value={e} key={index}>{e}</option>
+                                let elements = [];
+                                for (let index1 = 0; index1 < index; index1++) {
+                                    elements.push(Akademiks[index1])
+                                }
+                                console.log(elements);
+                                if (!elements.includes(e)) {
+                                    return <option value={e} key={index}>{e}</option>
+                                }
                             })}
                         </select>
                     </div>
@@ -264,7 +275,14 @@ const DataFilter = () => {
                         <select onChange={handleData} value={formStateData.CompanyNames} name='CompanyNames' className='min-w-28 p-2 border-2 border-white rounded-lg outline-none focus:border-2 focus:border-green-300 bg-black text-white'>
                             <option value="">Hepsi</option>
                             {Companies.map((e, index) => {
-                                return <option value={e} key={index}>{e}</option>
+                                let elements = [];
+                                for (let index1 = 0; index1 < index; index1++) {
+                                    elements.push(Companies[index1])
+                                }
+                                console.log(elements);
+                                if (!elements.includes(e)) {
+                                    return <option value={e} key={index}>{e}</option>
+                                }
                             })}
 
                         </select>
@@ -275,7 +293,13 @@ const DataFilter = () => {
                         <select onChange={handleData} name='ContractType' value={formStateData.ContractType} className='min-w-28 p-2 border-2 border-white rounded-lg outline-none focus:border-2 focus:border-green-300 bg-black text-white'>
                             <option value="">Hepsi</option>
                             {DealType.map((e, index) => {
-                                return <option value={e} key={index}>{e}</option>
+                                let elements = [];
+                                for (let index1 = 0; index1 < index; index1++) {
+                                    elements.push(DealType[index1])
+                                }
+                                if (!elements.includes(e)) {
+                                    return <option value={e} key={index}>{e}</option>
+                                }
                             })}
                         </select>
                     </div>
@@ -295,7 +319,14 @@ const DataFilter = () => {
                         <select onChange={handleData} name='ConversationOwner' value={formStateData.ConversationOwner} className='min-w-28 p-2 border-2 border-white rounded-lg outline-none focus:border-2 focus:border-green-300 bg-black text-white'>
                             <option value="">Hepsi</option>
                             {Users.map((e, index) => {
-                                return <option value={e} key={index}>{e}</option>
+                                let elements = [];
+                                for (let index1 = 0; index1 < index; index1++) {
+                                    elements.push(Users[index1])
+                                }
+                                console.log(elements);
+                                if (!elements.includes(e)) {
+                                    return <option value={e.toUpperCase()} key={index}>{e.toUpperCase()}</option>
+                                }
                             })}
                         </select>
                     </div>
@@ -305,7 +336,14 @@ const DataFilter = () => {
                         <select onChange={handleData} name='Sector' value={formStateData.Sector} className='min-w-28 p-2 border-2 border-white rounded-lg outline-none focus:border-2 focus:border-green-300 bg-black text-white'>
                             <option value="">Hepsi</option>
                             {Sektor.map((e, index) => {
-                                return <option value={e} key={index}>{e}</option>
+                                let elements = [];
+                                for (let index1 = 0; index1 < index; index1++) {
+                                    elements.push(Sektor[index1])
+                                }
+                                console.log(elements);
+                                if (!elements.includes(e)) {
+                                    return <option value={e} key={index}>{e}</option>
+                                }
                             })}
                         </select>
                     </div>
@@ -325,7 +363,7 @@ const DataFilter = () => {
 
                     <thead className='border-b-2 border-white relative'>
                         <tr >
-                            <th>SATIR</th>
+                            <th className=' w-9 '>No</th>
                             {
                                 Object.keys(Filter).map((e) => {
                                     return <th className='break-words'>{e}</th>

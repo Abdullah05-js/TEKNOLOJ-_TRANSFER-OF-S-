@@ -26,6 +26,7 @@ const Dataisertaion = () => {
     const [Companies, setCompanies] = useState([]);
     const [Users, setUsers] = useState([]);
     const [Sektor, setSektor] = useState([]);
+    const [isSuccess, setisSuccess] = useState("");
 
 
     const FetchSelectors = async () => {
@@ -46,37 +47,30 @@ const Dataisertaion = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
+            const FormstateData = { ...formState }
 
-            const response = await window.electron.ipcRenderer.invoke("SetConversation", formState);
-            if (response) {
-                alert("Bilgiler başarıyla kaydedildi")
-            } else {
-                alert("Bilgiler Kaydedilmedi");
+            if (FormstateData.ContractType === "") {
+                FormstateData.ContractType = "Sözlemşesi olmayan"
             }
+            const response = await window.electron.ipcRenderer.invoke("SetConversation", FormstateData);
+            if (response) {
+                setisSuccess(true)
+            } else {
+                setisSuccess(false)
+            }
+            setTimeout(() => {
+                setisSuccess("")
+            }, 1000);
         } catch (error) {
             console.log("error from form:", error);
         } finally {
             FetchSelectors();
-            setFormState({
-                isArge: false,
-                isContractSigned: false,
-                isArgeBackStatus: false,
-                isSurdurulebilirlik: false,
-                isProtocolSigned: false,
-                isAcademicJoined: false,
-                AcademicName: '',
-                CompanyNames: '',
-                ContractType: '',
-                Date: '',
-                ConversationOwner: '',
-                Sector: '',
-            })
         }
     }
 
 
     const handleAcademic = (e) => {
-        e.target.value.length > 0 ? setFormState({ ...formState, AcademicName: e.target.value.toUpperCase() , isAcademicJoined:true }) :  setFormState({ ...formState, AcademicName: e.target.value.toUpperCase() , isAcademicJoined:false})
+        e.target.value.length > 0 ? setFormState({ ...formState, AcademicName: e.target.value.toUpperCase(), isAcademicJoined: true }) : setFormState({ ...formState, AcademicName: e.target.value.toUpperCase(), isAcademicJoined: false })
     }
 
     console.log(Users);
@@ -84,6 +78,11 @@ const Dataisertaion = () => {
         <form onSubmit={handleSubmit} className='w-screen h-screen flex flex-col  justify-center items-center'>
 
             <ul className='flex justify-center items-start flex-col gap-5'>
+                <li>
+                    <div className='flex justify-between items-center gap-2'>
+                        {isSuccess === "" ? "" : isSuccess ? <h1 className='text-green-300  text-2xl font-bold'>Bilgiler Kaydedildi</h1> : <h1 className='text-red-600  text-2xl font-bold'>Bilgiler Kaydedilemedi</h1>}
+                    </div>
+                </li>
 
                 <li>
                     <div className='flex justify-between items-center gap-2'>
@@ -149,7 +148,7 @@ const Dataisertaion = () => {
                             <option value="">Görüşmeyi Yapan Kişi</option>
                             {
                                 Users.length > 0 && Users.map((e) => {
-                                    return <option value={e}>{e}</option>
+                                    return <option value={e.toUpperCase()}>{e.toUpperCase()}</option>
                                 })
                             }
                         </select>

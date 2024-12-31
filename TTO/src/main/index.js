@@ -1,11 +1,11 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, globalShortcut } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import connectDB from './Backend/DB/ConnectDB'
 import { AuthUser, CreateAcccount } from './Backend/Services/UsersService.js'
-import { SearchConversations, SetConversation } from "./Backend/Services/ConversationsService.js"
-import { CreateTodo, GetUserTodos, UpdateTodoStatus, DeleteTodo } from "./Backend/Services/TodoService.js"
+import { SearchConversations, SetConversation ,GetSelectors} from "./Backend/Services/ConversationsService.js"
+import { CreateTodo, GetUserTodos, UpdateTodoStatus, DeleteTodo} from "./Backend/Services/TodoService.js"
 import path from 'path'
 
 function createWindow() {
@@ -15,7 +15,7 @@ function createWindow() {
     height: 800,
     icon: icon,
     show: false,
-    autoHideMenuBar: true,
+    autoHideMenuBar: false,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -23,6 +23,15 @@ function createWindow() {
       devTools: true
     }
   })
+
+
+  //bu şey için istedin shortcutı düzenlemek yada görev atamak.
+  globalShortcut.register('Ctrl+Shift+I', () => {
+    console.log('İPiniz kaydedilmiştir');
+  });
+
+
+
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -81,6 +90,14 @@ app.whenReady().then(async () => {
     console.log(data);
     return await SetConversation(data);
   })
+
+
+  ipcMain.handle("GetSelectors", async (event, data) => {
+    console.log(data);
+    return await GetSelectors()
+  })
+
+ 
 
   // Todo handlers
   ipcMain.handle("CreateTodo", async (event, data) => {
