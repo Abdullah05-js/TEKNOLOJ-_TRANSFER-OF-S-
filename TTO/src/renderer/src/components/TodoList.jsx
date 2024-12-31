@@ -1,16 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import Input from './Uİ/Input';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
+import tr from 'date-fns/locale/tr';
+import { format } from 'date-fns';
+
+// Register Turkish locale
+registerLocale('tr', tr);
 
 const TodoList = () => {
     const [todos, setTodos] = useState([]);
     const [newTodo, setNewTodo] = useState({
         description: '',
-        deadline: '',
+        deadline: new Date(),
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Fetch todos on component mount
+    // Custom styles for the date picker
+    const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
+        <button
+            className="text-white bg-transparent hover:border-green-300 hover:border-2 rounded-xl border-white border-2 p-2 focus:border-green-300 focus:border-2 outline-none min-w-[200px] text-left"
+            onClick={onClick}
+            ref={ref}
+        >
+            {value}
+        </button>
+    ));
+
     useEffect(() => {
         fetchTodos();
     }, []);
@@ -48,7 +65,7 @@ const TodoList = () => {
 
             const todoData = {
                 description: newTodo.description,
-                deadline: new Date(newTodo.deadline).toISOString(),
+                deadline: newTodo.deadline.toISOString(),
                 userId,
                 completed: false
             };
@@ -60,7 +77,7 @@ const TodoList = () => {
                 setTodos(prevTodos => [createdTodo, ...prevTodos]);
                 setNewTodo({
                     description: '',
-                    deadline: ''
+                    deadline: new Date()
                 });
             } else {
                 setError('Görev oluşturulamadı.');
@@ -136,10 +153,13 @@ const TodoList = () => {
                         value={newTodo.description}
                         onchange={(e) => setNewTodo({ ...newTodo, description: e.target.value })}
                     />
-                    <Input
-                        type="date"
-                        value={newTodo.deadline}
-                        onchange={(e) => setNewTodo({ ...newTodo, deadline: e.target.value })}
+                    <DatePicker
+                        selected={newTodo.deadline}
+                        onChange={(date) => setNewTodo({ ...newTodo, deadline: date })}
+                        dateFormat="dd/MM/yyyy"
+                        locale="tr"
+                        customInput={<CustomInput />}
+                        minDate={new Date()}
                     />
                     <button 
                         type="submit"
@@ -188,6 +208,54 @@ const TodoList = () => {
                     </div>
                 ))}
             </div>
+
+            {/* Custom styles for the date picker */}
+            <style>{`
+                .react-datepicker {
+                    background-color: black !important;
+                    border: 2px solid #00ff88 !important;
+                    border-radius: 0.75rem !important;
+                    font-family: inherit !important;
+                }
+                .react-datepicker__header {
+                    background-color: black !important;
+                    border-bottom: 1px solid #00ff88 !important;
+                }
+                .react-datepicker__current-month,
+                .react-datepicker__day-name {
+                    color: #00ff88 !important;
+                }
+                .react-datepicker__month {
+                    background-color: black !important;
+                }
+                .react-datepicker__day {
+                    color: white !important;
+                }
+                .react-datepicker__day:hover {
+                    background-color: #00ff88 !important;
+                    color: black !important;
+                }
+                .react-datepicker__day--selected,
+                .react-datepicker__day--keyboard-selected {
+                    background-color: #00ff88 !important;
+                    color: black !important;
+                }
+                .react-datepicker__day--disabled {
+                    color: #666 !important;
+                }
+                .react-datepicker__triangle {
+                    display: none !important;
+                }
+                .react-datepicker-popper {
+                    padding-top: 0 !important;
+                }
+                .react-datepicker__navigation-icon::before {
+                    border-color: #00ff88 !important;
+                }
+                .react-datepicker__navigation:hover *::before {
+                    border-color: white !important;
+                }
+            `}</style>
         </div>
     );
 };
