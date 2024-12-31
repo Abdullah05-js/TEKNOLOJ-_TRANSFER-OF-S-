@@ -1,5 +1,5 @@
 import React from 'react';
-import { WebsiteIcon, HomeIcon, PostIcons, SearchIcon, TodoIcon } from "../assets/icons.jsx"
+import { WebsiteIcon, HomeIcon, PostIcons, SearchIcon, TodoIcon, StatsIcon } from "../assets/icons.jsx"
 const NavBar = ({ setShow }) => {
 
 
@@ -26,6 +26,11 @@ const NavBar = ({ setShow }) => {
                 <li className='flex justify-center'>
                     <button title='GÖREV LİSTESİ' onClick={() => setShow(3)}>
                         <TodoIcon width={48} height={48} />
+                    </button>
+                </li>
+                <li className='flex justify-center'>
+                    <button title='İSTATİSTİKLER' onClick={() => setShow(4)}>
+                        <StatsIcon width={48} height={48} />
                     </button>
                 </li>
             </ul>

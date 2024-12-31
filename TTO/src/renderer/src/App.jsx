@@ -5,6 +5,7 @@ import Dataisertaion from "./components/Dataİnsertaion"
 import HomePage from "./components/HomePage"
 import DataFilter from "./components/DataFilter"
 import TodoList from "./components/TodoList"
+import Stats from "./components/Stats"
 
 
 function App() {
@@ -24,7 +25,9 @@ function App() {
             :
             Show === 3 ? <TodoList />
               :
-              ""
+              Show === 4 ? <Stats />
+                :
+                ""
       }
 
     </div>
