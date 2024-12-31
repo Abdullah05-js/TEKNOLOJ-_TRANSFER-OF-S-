@@ -4,7 +4,8 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import connectDB from './Backend/DB/ConnectDB'
 import { AuthUser, CreateAcccount } from './Backend/Services/UsersService.js'
-import { SearchConversations ,SetConversation} from "./Backend/Services/ConversationsService.js"
+import { SearchConversations, SetConversation } from "./Backend/Services/ConversationsService.js"
+import { CreateTodo, GetUserTodos, UpdateTodoStatus, DeleteTodo } from "./Backend/Services/TodoService.js"
 import path from 'path'
 
 function createWindow() {
@@ -67,29 +68,40 @@ app.whenReady().then(async () => {
   ipcMain.on('ping', () => console.log('pong'))
 
   ipcMain.handle("Auth", async (event, data) => {
-
     console.log(data);
     return await AuthUser(data);
   })
 
-
   ipcMain.handle("Filter", async (event, data) => {
-
     console.log(data);
-
     return await SearchConversations(data);
   })
 
-
-
-ipcMain.handle("SetConversation", async (event, data) => {
-
+  ipcMain.handle("SetConversation", async (event, data) => {
     console.log(data);
-
     return await SetConversation(data);
   })
 
+  // Todo handlers
+  ipcMain.handle("CreateTodo", async (event, data) => {
+    console.log('Creating todo:', data);
+    return await CreateTodo(data);
+  })
 
+  ipcMain.handle("GetUserTodos", async (event, userId) => {
+    console.log('Fetching todos for user:', userId);
+    return await GetUserTodos(userId);
+  })
+
+  ipcMain.handle("UpdateTodoStatus", async (event, { todoId, completed }) => {
+    console.log('Updating todo status:', todoId, completed);
+    return await UpdateTodoStatus(todoId, completed);
+  })
+
+  ipcMain.handle("DeleteTodo", async (event, todoId) => {
+    console.log('Deleting todo:', todoId);
+    return await DeleteTodo(todoId);
+  })
 
   //---------------------------------------------------------------------------
 
