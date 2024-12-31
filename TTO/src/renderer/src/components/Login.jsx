@@ -15,10 +15,13 @@ const Login = ({ setShow }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const status = await window.electron.ipcRenderer.invoke("Auth", Data)
+        const response = await window.electron.ipcRenderer.invoke("Auth", Data)
 
-        if(status)
+        if(response.success)
         {
+            // Store user data in localStorage
+            localStorage.setItem('userId', response.user.id);
+            localStorage.setItem('username', response.user.username);
             setShow(0)
         }
         else

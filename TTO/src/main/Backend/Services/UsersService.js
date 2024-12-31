@@ -22,20 +22,30 @@ export const SearchUser = async (user) => {
 
 export const AuthUser = async (user) => {
    try {
-      const User = await Users.findOne({
-          UserName:user.UserName,
-      })
+      const foundUser = await Users.findOne({
+          UserName: user.UserName,
+      });
 
-      return User.PassWord !== user.password ? false : true
+      if (!foundUser || foundUser.PassWord !== user.password) {
+          return { success: false };
+      }
+
+      return {
+          success: true,
+          user: {
+              id: foundUser._id.toString(),
+              username: foundUser.UserName
+          }
+      };
 
    } catch (error) {
-      console.log("error from  AuthUser:",error);
-      return false
+      console.log("error from AuthUser:", error);
+      return { success: false };
    }
-  }
+}
 
 
-  export const CreateAcccount = async (user) => {
+export const CreateAcccount = async (user) => {
    try {
   
       const NewUser = new Users({
