@@ -90,7 +90,7 @@ export const getTodoForDate = async (year,month) => {
         // Belirtilen yıl ve ay ile eşleşen görevleri filtrele
         const filteredTodos = todos.filter(todo => {
             const todoDate = todo.deadline.toISOString();
-            console.log(todoDate);
+            //console.log(todoDate,year,month);
             return (
                 todoDate.split("-")[0] === year &&
                 todoDate.split("-")[1] === month 

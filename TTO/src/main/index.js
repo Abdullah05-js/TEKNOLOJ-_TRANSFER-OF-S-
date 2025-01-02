@@ -15,12 +15,12 @@ function createWindow() {
     height: 800,
     icon: icon,
     show: false,
-    autoHideMenuBar: true,
+    autoHideMenuBar: false,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
-      devTools: false
+      devTools: true
     }
   })
 
@@ -155,7 +155,7 @@ app.whenReady().then(async () => {
       isProtocolSigned: true
     })
 
-
+    console.log(data);
 
     const totalGorevlendirme = await getTodoForDate(data.year, data.month);
 

@@ -13,7 +13,7 @@ const Stats = () => {
 
     // State for selected values
     const [selectedAkademisyen, setSelectedAkademisyen] = useState('');
-    const [selectedDate, setSelectedDate] = useState((new Date()).toISOString());
+    const [selectedDate, setSelectedDate] = useState({local:(new Date()).toLocaleDateString() , normal:new Date()});
     const [mockAkademisyenler, setmockAkademisyenler] = useState([])
     const [mockStats, setmockStats] = useState({
         akademisyenSozlesme: 0,
@@ -29,13 +29,15 @@ const Stats = () => {
     }
 
     const getFilterData = async () => {
-        const Veriler = await window.electron.ipcRenderer.invoke("GetFilter", { AcademicName: selectedAkademisyen, year: selectedDate.split("-")[0], month: selectedDate.split("-")[1] });
+        console.log(selectedDate);
+        const Veriler = await window.electron.ipcRenderer.invoke("GetFilter", { AcademicName: selectedAkademisyen, year: selectedDate.local.split(".")[2], month: selectedDate.local.split(".")[1] });
         setmockStats(Veriler);
     }
 
     useEffect(() => {
         GetAkademik();
-        getFilterData
+        getFilterData();
+        console.log(selectedDate);
     }, []);
 
 
@@ -86,8 +88,8 @@ const Stats = () => {
                         })}
                     </select>
                     <DatePicker
-                        selected={selectedDate}
-                        onChange={date => setSelectedDate(date.toISOString())}
+                        selected={selectedDate.normal}
+                        onChange={date => setSelectedDate({local:date.toLocaleDateString(),normal:date})}
                         dateFormat="MMMM yyyy"
                         showMonthYearPicker
                         locale="tr"
@@ -101,7 +103,7 @@ const Stats = () => {
                     <div className='p-4 border-2 border-green-300 rounded-xl'>
                         <h2 className='text-white text-xl mb-2'>Seçilen Akademisyen İstatistikleri</h2>
                         <p className='text-green-300'>
-                            {selectedAkademisyen} - {format(selectedDate, 'MMMM yyyy', { locale: tr })}
+                            {selectedAkademisyen} - {format(selectedDate.normal, 'MMMM yyyy', { locale: tr })}
                         </p>
                         <p className='text-white mt-2'>
                             Sözleşme Sayısı: <span className='text-green-300'>{mockStats.akademisyenSozlesme}</span>
