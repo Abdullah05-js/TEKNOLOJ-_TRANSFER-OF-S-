@@ -73,3 +73,33 @@ export const DeleteTodo = async (todoId) => {
         return false;
     }
 }; 
+
+
+
+export const getTodoForDate = async (year,month) => {
+    try {
+        // Tüm görevleri getir
+        const todos = await Todo.find().lean();
+
+        // Görevlerin varlığını kontrol et
+        if (!Array.isArray(todos)) {
+            console.error('Beklenmeyen veri formatı:', todos);
+            return [];
+        }
+
+        // Belirtilen yıl ve ay ile eşleşen görevleri filtrele
+        const filteredTodos = todos.filter(todo => {
+            const todoDate = todo.deadline.toISOString();
+            console.log(todoDate);
+            return (
+                todoDate.split("-")[0] === year &&
+                todoDate.split("-")[1] === month 
+            );
+        });
+
+        return filteredTodos;
+    } catch (error) {
+        console.error('Error filtering todos:', error);
+        return [];
+    }
+}; 

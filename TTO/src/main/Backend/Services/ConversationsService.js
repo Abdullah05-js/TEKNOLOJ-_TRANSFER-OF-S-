@@ -3,7 +3,7 @@ import Users from "../DB/Users";
 import { GetUsers } from "./UsersService";
 export const GetConversations = async () => {
    try {
-      return await Conversations.find();
+      return await Conversations.find().lean();
    } catch (error) {
       console.log("error from SearchUser:", error);
    }
@@ -20,8 +20,22 @@ export const SearchConversations = async (query) => {
 
 export const SetConversation = async (data) => {
    try {
-      const newConversation = new Conversations(data)
-      await newConversation.save()
+      
+      const newData = {...data};
+      delete newData.isNew;
+      delete newData.CompanyNames
+      if(!data.isNew)
+      {
+         await Conversations.findOneAndUpdate(
+            { CompanyNames: data.CompanyNames }, 
+            { $set: newData },          
+        );
+
+      }
+      else{
+         const newConversation = new Conversations(newData)
+         await newConversation.save()
+      }
 
       return true
    } catch (error) {

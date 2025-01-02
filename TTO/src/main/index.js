@@ -4,8 +4,8 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import connectDB from './Backend/DB/ConnectDB'
 import { AuthUser, CreateAcccount } from './Backend/Services/UsersService.js'
-import { SearchConversations, SetConversation ,GetSelectors} from "./Backend/Services/ConversationsService.js"
-import { CreateTodo, GetUserTodos, UpdateTodoStatus, DeleteTodo} from "./Backend/Services/TodoService.js"
+import { SearchConversations, SetConversation, GetSelectors, GetConversations } from "./Backend/Services/ConversationsService.js"
+import { CreateTodo, GetUserTodos, UpdateTodoStatus, DeleteTodo, getTodoForDate } from "./Backend/Services/TodoService.js"
 import path from 'path'
 
 function createWindow() {
@@ -15,12 +15,12 @@ function createWindow() {
     height: 800,
     icon: icon,
     show: false,
-    autoHideMenuBar: false,
+    autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
-      devTools: true
+      devTools: false
     }
   })
 
@@ -88,6 +88,9 @@ app.whenReady().then(async () => {
 
   ipcMain.handle("SetConversation", async (event, data) => {
     console.log(data);
+
+
+
     return await SetConversation(data);
   })
 
@@ -97,7 +100,73 @@ app.whenReady().then(async () => {
     return await GetSelectors()
   })
 
- 
+  ipcMain.handle("GetAkademisyenler", async (event, data) => {
+    const List = await GetConversations();
+    const Data = List.map((e) => {
+      return e.AcademicName;
+    })
+
+    console.log(Data);
+    const ReturnList = Data.map((e, index) => {
+      let elements = [];
+      for (let index1 = 0; index1 < index; index1++) {
+        elements.push(Data[index1])
+      }
+      if (!elements.includes(e)) {
+        return e
+      }
+    })
+    console.log("----------\n", ReturnList);
+    return ReturnList;
+  })
+
+
+
+  ipcMain.handle("GetFilter", async (event, data) => {
+    const List = await GetConversations();
+    const Data = {
+      akademisyenSozlesme: 0,
+      totalSozlesme: 0,
+      totalProtokol: 0,
+      totalGorevlendirme: 0
+    }
+
+
+    let filteredContracts = [];
+    if (data.AcademicName !== "") {
+      filteredContracts = List.filter(conversation => {
+        const conversationDate = conversation.Date;
+        console.log(conversationDate);
+        return (
+          conversationDate.split("-")[0] === data.year &&
+          conversationDate.split("-")[1] === data.month && // Aylar 0 bazlı olduğu için +1 eklenir
+          conversation.isAcademicJoined === true && // Akademisyen katılmış mı?
+          conversation.isContractSigned === true && // Sözleşme imzalanmamış mı?
+          conversation.AcademicName === data.AcademicName
+        );
+      });
+    }
+
+    const totalSozlesme = await SearchConversations({
+      isContractSigned: true
+    })
+
+    const totalProtokol = await SearchConversations({
+      isProtocolSigned: true
+    })
+
+
+
+    const totalGorevlendirme = await getTodoForDate(data.year, data.month);
+
+    Data.totalGorevlendirme = totalGorevlendirme.length;
+    Data.totalProtokol = totalProtokol.length;
+    Data.totalSozlesme = totalSozlesme.length;
+    Data.akademisyenSozlesme = filteredContracts.length;
+    return Data
+  })
+
+
 
   // Todo handlers
   ipcMain.handle("CreateTodo", async (event, data) => {

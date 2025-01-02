@@ -3,31 +3,47 @@ import DatePicker, { registerLocale } from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import tr from 'date-fns/locale/tr'; // Turkish locale
 import { format } from 'date-fns';
-
+import { useEffect } from 'react';
 // Register Turkish locale
 registerLocale('tr', tr);
 
+//todo burdaki tüm tarih girişlerin düzeltilmesi
+
 const Stats = () => {
-    // Mock data for akademisyenler
-    const mockAkademisyenler = [
-        "Prof. Dr. Ahmet Yılmaz",
-        "Doç. Dr. Mehmet Demir",
-        "Dr. Öğr. Üyesi Ayşe Kaya",
-        "Prof. Dr. Fatma Şahin",
-        "Doç. Dr. Ali Öztürk"
-    ];
 
     // State for selected values
     const [selectedAkademisyen, setSelectedAkademisyen] = useState('');
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState((new Date()).toISOString());
+    const [mockAkademisyenler, setmockAkademisyenler] = useState([])
+    const [mockStats, setmockStats] = useState({
+        akademisyenSozlesme: 0,
+        totalSozlesme: 0,
+        totalProtokol: 0,
+        totalGorevlendirme: 0
+    })
 
-    // Mock data for statistics
-    const mockStats = {
-        akademisyenSozlesme: 3,
-        totalSozlesme: 12,
-        totalProtokol: 8,
-        totalGorevlendirme: 15
-    };
+    // Mock data for akademisyenler
+    const GetAkademik = async () => {
+        const Akademisyenler = await window.electron.ipcRenderer.invoke("GetAkademisyenler", "");
+        setmockAkademisyenler(Akademisyenler);
+    }
+
+    const getFilterData = async () => {
+        const Veriler = await window.electron.ipcRenderer.invoke("GetFilter", { AcademicName: selectedAkademisyen, year: selectedDate.split("-")[0], month: selectedDate.split("-")[1] });
+        setmockStats(Veriler);
+    }
+
+    useEffect(() => {
+        GetAkademik();
+        getFilterData
+    }, []);
+
+
+
+    useEffect(() => {
+        getFilterData();
+    }, [selectedAkademisyen, selectedDate]);
+
 
     // Function to handle akademisyen change
     const handleAkademisyenChange = (e) => {
@@ -58,15 +74,20 @@ const Stats = () => {
                         className='flex-1 text-white bg-transparent hover:border-green-300 hover:border-2 rounded-xl border-white border-2 p-2 focus:border-green-300 focus:border-2 outline-none'
                     >
                         <option value="" className='bg-black'>Akademisyen Seçin</option>
-                        {mockAkademisyenler.map((akademisyen, index) => (
-                            <option key={index} value={akademisyen} className='bg-black'>
-                                {akademisyen}
-                            </option>
-                        ))}
+                        {mockAkademisyenler.map((akademisyen, index) => {
+                            if (akademisyen !== undefined) {
+                                return (
+                                    <option key={index} value={akademisyen} className='bg-black'>
+                                        {akademisyen}
+                                    </option>
+                                )
+                            }
+
+                        })}
                     </select>
                     <DatePicker
                         selected={selectedDate}
-                        onChange={date => setSelectedDate(date)}
+                        onChange={date => setSelectedDate(date.toISOString())}
                         dateFormat="MMMM yyyy"
                         showMonthYearPicker
                         locale="tr"

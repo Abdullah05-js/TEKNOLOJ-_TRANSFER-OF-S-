@@ -52,7 +52,7 @@ const Dataisertaion = () => {
             if (FormstateData.ContractType === "") {
                 FormstateData.ContractType = "Sözlemşesi olmayan"
             }
-            const response = await window.electron.ipcRenderer.invoke("SetConversation", FormstateData);
+            const response = await window.electron.ipcRenderer.invoke("SetConversation", { ...FormstateData, isNew });
             if (response) {
                 setisSuccess(true)
             } else {
@@ -101,11 +101,16 @@ const Dataisertaion = () => {
                                 (
                                     <select value={formState.CompanyNames} onChange={(e) => setFormState({ ...formState, CompanyNames: e.target.value })} className='min-w-28 p-2 border-2 border-white rounded-lg outline-none focus:border-2 focus:border-green-300 bg-black text-white'>
                                         <option value="">Firma Adı Seçiniz</option>
-                                        {
-                                            Companies.length > 0 && Companies.map((e) => {
-                                                return <option value={e}>{e}</option>
-                                            })
-                                        }
+                                        {Companies.map((e, index) => {
+                                            let elements = [];
+                                            for (let index1 = 0; index1 < index; index1++) {
+                                                elements.push(Companies[index1])
+                                            }
+                                            console.log(elements);
+                                            if (!elements.includes(e)) {
+                                                return <option value={e} key={index}>{e}</option>
+                                            }
+                                        })}
                                     </select>
                                 )
                         }
@@ -121,11 +126,16 @@ const Dataisertaion = () => {
                                 (
                                     <select value={formState.Sector} onChange={(e) => setFormState({ ...formState, Sector: e.target.value.toUpperCase() })} className='min-w-28 p-2 border-2 border-white rounded-lg outline-none focus:border-2 focus:border-green-300 bg-black text-white'>
                                         <option value="">Sektör Seçiniz</option>
-                                        {
-                                            Sektor.length > 0 && Sektor.map((e) => {
-                                                return <option value={e}>{e}</option>
-                                            })
-                                        }
+                                        {Sektor.map((e, index) => {
+                                            let elements = [];
+                                            for (let index1 = 0; index1 < index; index1++) {
+                                                elements.push(Sektor[index1])
+                                            }
+                                            console.log(elements);
+                                            if (!elements.includes(e)) {
+                                                return <option value={e} key={index}>{e}</option>
+                                            }
+                                        })}
                                     </select>
                                 )
                         }
@@ -146,11 +156,16 @@ const Dataisertaion = () => {
                         <h1 className='text-white  text-2xl font-bold'>Görüşmeyi Yapan Kişi:</h1>
                         <select onChange={(e) => { setFormState({ ...formState, ConversationOwner: e.target.value.toUpperCase() }) }} value={formState.ConversationOwner} className='min-w-28 p-2 border-2 border-white rounded-lg outline-none focus:border-2 focus:border-green-300 bg-black text-white'>
                             <option value="">Görüşmeyi Yapan Kişi</option>
-                            {
-                                Users.length > 0 && Users.map((e) => {
-                                    return <option value={e.toUpperCase()}>{e.toUpperCase()}</option>
-                                })
-                            }
+                            {Users.map((e, index) => {
+                                let elements = [];
+                                for (let index1 = 0; index1 < index; index1++) {
+                                    elements.push(Users[index1])
+                                }
+                                console.log(elements);
+                                if (!elements.includes(e)) {
+                                    return <option value={e.toUpperCase()} key={index}>{e.toUpperCase()}</option>
+                                }
+                            })}
                         </select>
                     </div>
                 </li>
@@ -164,11 +179,16 @@ const Dataisertaion = () => {
                                 (
                                     <select value={formState.AcademicName} onChange={handleAcademic} className='min-w-28 p-2 border-2 border-white rounded-lg outline-none focus:border-2 focus:border-green-300 bg-black text-white'>
                                         <option value="">Akademisyen Seçiniz</option>
-                                        {
-                                            Akademiks.length > 0 && Akademiks.map((e) => {
-                                                return <option value={e}>{e}</option>
-                                            })
-                                        }
+                                        {Akademiks.map((e, index) => {
+                                            let elements = [];
+                                            for (let index1 = 0; index1 < index; index1++) {
+                                                elements.push(Akademiks[index1])
+                                            }
+                                            console.log(elements);
+                                            if (!elements.includes(e)) {
+                                                return <option value={e} key={index}>{e}</option>
+                                            }
+                                        })}
                                     </select>
                                 )
                         }
