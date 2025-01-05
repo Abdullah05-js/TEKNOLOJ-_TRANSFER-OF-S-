@@ -1,5 +1,7 @@
 # TEKNOLOJİ TRANSFER OFİSİ App
 
+Technology Transfer Offices (TTO) are institutions that act as a bridge between universities, research institutions, and industry, assisting in the commercialization of knowledge and technology. This program was created because they wanted a solution to facilitate their operations.
+
 Welcome to the TEKNOLOJİ TRANSFER OFİSİ App repository! This application is built with Electron.js and Vite.js.
 
 ## Table of Contents
