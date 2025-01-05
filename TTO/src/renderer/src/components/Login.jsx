@@ -17,15 +17,13 @@ const Login = ({ setShow }) => {
 
         const response = await window.electron.ipcRenderer.invoke("Auth", Data)
 
-        if(response.success)
-        {
+        if (response.success) {
             // Store user data in localStorage
             localStorage.setItem('userId', response.user.id);
             localStorage.setItem('username', response.user.username);
             setShow(0)
         }
-        else
-        {
+        else {
             setData({
                 UserName: "",
                 password: ""
@@ -36,13 +34,15 @@ const Login = ({ setShow }) => {
                 setShowError(false)
             }, 1000);
         }
-     
+
     }
 
     useEffect(() => {
         if (Data.UserName.length > 0 && Data.password.length > 0) {
             setisDisabled(false)
         }
+        else 
+            setisDisabled(true)
 
 
     }, [Data.password, Data.UserName]);
@@ -59,10 +59,14 @@ const Login = ({ setShow }) => {
 
             <Input type={"password"} placeholder={"Şifre"} onchange={(e) => setData({ ...Data, password: e.target.value })} value={Data.password} />
 
-           {ShowError &&  <h1 className='text-xl bg-gradient-to-r from-red-300 to-red-700 font-bold  bg-clip-text text-transparent'>"Kullancı Adı veya Şifre Hattalı"</h1>}
+            {ShowError && <h1 className='text-xl bg-gradient-to-r from-red-300 to-red-700 font-bold  bg-clip-text text-transparent'>"Kullancı Adı veya Şifre Hattalı"</h1>}
 
-            <button type="submit" className={`mt-2 text-white border-2 ${isDisabled ? "border-red-400" : "border-green-300"} p-3 rounded-xl cursor-pointer`} disabled={isDisabled} >Giriş</button>
+            <button type="submit" className={`mt-2  border-2 ${isDisabled ? "px-6 py-2 bg-red-500 text-black rounded-xl font-bold hover:bg-red-600 transition-colors" : "px-6 py-2 bg-green-300 text-black rounded-xl font-bold hover:bg-green-400 transition-colors"} p-3  cursor-pointer`} disabled={isDisabled} >Giriş</button>
 
+
+            <p className='px-6 py-2  bg-gradient-to-r from-green-100 to-green-400   rounded-xl font-bold '>
+            Powered by Abdullah Han && Selçuk Öz
+            </p>
         </form>
     );
 }

@@ -7,6 +7,9 @@ import { AuthUser, CreateAcccount } from './Backend/Services/UsersService.js'
 import { SearchConversations, SetConversation, GetSelectors, GetConversations } from "./Backend/Services/ConversationsService.js"
 import { CreateTodo, GetUserTodos, UpdateTodoStatus, DeleteTodo, getTodoForDate } from "./Backend/Services/TodoService.js"
 import path from 'path'
+import fs from "fs";
+import { Buffer } from 'buffer'
+
 
 function createWindow() {
   // Create the browser window.
@@ -15,12 +18,12 @@ function createWindow() {
     height: 800,
     icon: icon,
     show: false,
-    autoHideMenuBar: false,
+    autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
-      devTools: true
+      devTools: false
     }
   })
 
@@ -190,6 +193,33 @@ app.whenReady().then(async () => {
   })
 
   //---------------------------------------------------------------------------
+  // PDF
+
+  ipcMain.handle("PDF", async (event, data) => {
+    try {
+      console.log(" i got it");
+      const Data = Buffer.from(data)
+      const date = new Date()
+      const month = date.getMonth() + 1
+      const year = date.getFullYear()
+
+      const savingPath = path.join(app.getPath('downloads'), `Rapor-${year}-${month}.pdf`)
+      fs.writeFileSync(savingPath, Data);
+      console.log("başarlı");
+      return true
+    } catch (error) {
+      console.log("didnt ave the file");
+      return false
+    }
+  })
+
+
+
+
+
+
+
+  //---------------------------------
 
   createWindow();
 

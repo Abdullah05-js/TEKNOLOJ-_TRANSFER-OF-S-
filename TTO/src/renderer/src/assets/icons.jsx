@@ -36,7 +36,7 @@ export const SearchIcon = ({ width, height }) => {
 
 export const WebsiteIcon = ({height=100,width=100,alt}) => {
     return (
-      <svg xmlns="http://www.w3.org/2000/svg" id="amblem" width={width} height={height} viewBox="0 0 64.757 64.724" alt={alt} className='animate-pulse'>
+      <svg  xmlns="http://www.w3.org/2000/svg" id="amblem" width={width} height={height} viewBox="0 0 64.757 64.724" alt={alt} className='animate-pulse'>
       <ellipse id="Ellipse_1" data-name="Ellipse 1" cx="32.297" cy="32.297" rx="32.297" ry="32.297" transform="translate(0 0.065)" fill="#000000"/>
       <circle id="Ellipse_2" data-name="Ellipse 2" cx="32.362" cy="32.362" r="32.362" transform="translate(0.033)" fill="#000000"/>
       <g id="Group_1" data-name="Group 1" transform="translate(0.033)">
