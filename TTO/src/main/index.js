@@ -18,12 +18,12 @@ function createWindow() {
     height: 800,
     icon: icon,
     show: false,
-    autoHideMenuBar: true,
+    autoHideMenuBar: false,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
-      devTools: false
+      devTools: true
     }
   })
 
@@ -170,6 +170,9 @@ app.whenReady().then(async () => {
   })
 
 
+  
+
+
 
   // Todo handlers
   ipcMain.handle("CreateTodo", async (event, data) => {
@@ -198,12 +201,8 @@ app.whenReady().then(async () => {
   ipcMain.handle("PDF", async (event, data) => {
     try {
       console.log(" i got it");
-      const Data = Buffer.from(data)
-      const date = new Date()
-      const month = date.getMonth() + 1
-      const year = date.getFullYear()
-
-      const savingPath = path.join(app.getPath('downloads'), `Rapor-${year}-${month}.pdf`)
+      const Data = Buffer.from(data.arrayBuffer)
+      const savingPath = path.join(app.getPath('downloads'), `Rapor-${data.name}.pdf`)
       fs.writeFileSync(savingPath, Data);
       console.log("başarlı");
       return true
