@@ -65,7 +65,7 @@ const Login = ({ setShow }) => {
 
 
             <p className='px-6 py-2  bg-gradient-to-r from-green-100 to-green-400   rounded-xl font-bold '>
-            Powered by Abdullah Han && Selçuk Öz
+            Powered by Abdullah Han && Selçuk Öz && Arif Can Güneş
             </p>
         </form>
     );
