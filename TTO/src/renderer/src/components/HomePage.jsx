@@ -19,7 +19,7 @@ const HomePage = () => {
                     </div>
                 </li>
             </ul>
-            <p className="text-center p-10 text-white">&copy; 2024 TTO inc.</p>
+            <p className="text-center p-10 text-white">&copy; {new Date().getFullYear()} TTO inc.</p>
 
         </div>
     );
