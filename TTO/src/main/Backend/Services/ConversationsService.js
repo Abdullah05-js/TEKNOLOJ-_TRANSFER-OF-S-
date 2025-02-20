@@ -22,7 +22,6 @@ export const SetConversation = async (data) => {
    try {
       
       const newData = {...data};
-      delete newData.isNew;
       delete newData.CompanyNames
       if(!data.isNew)
       {
@@ -33,7 +32,7 @@ export const SetConversation = async (data) => {
 
       }
       else{
-         const newConversation = new Conversations(newData)
+         const newConversation = new Conversations(data)
          await newConversation.save()
       }
 

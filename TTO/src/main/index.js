@@ -81,6 +81,7 @@ app.whenReady().then(async () => {
 
   ipcMain.handle("Auth", async (event, data) => {
     console.log(data);
+    //return await CreateAcccount(data);
     return await AuthUser(data);
   })
 
@@ -91,9 +92,6 @@ app.whenReady().then(async () => {
 
   ipcMain.handle("SetConversation", async (event, data) => {
     console.log(data);
-
-
-
     return await SetConversation(data);
   })
 

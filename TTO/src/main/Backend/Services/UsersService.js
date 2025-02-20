@@ -58,7 +58,7 @@ export const CreateAcccount = async (user) => {
       return true;
 
    } catch (error) {
-      console.log("error from  AuthUser:",error);
+      console.log("error from  createAccount:",error);
       return false
    }
   }

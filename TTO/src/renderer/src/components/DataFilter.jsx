@@ -79,7 +79,7 @@ const DataFilter = () => {
 
 
 
-    const ReturnList = Data.map((e, index) => {
+    const ReturnList = Data?.map((e, index) => {
         return (
             <tr key={index}>
 
@@ -137,8 +137,6 @@ const DataFilter = () => {
         }
         setFormStateData(newFormState);
     }
-
-    console.log(Data[0]);
 
     return (
         <div className='w-screen h-screen overflow-hidden  flex flex-col  justify-start items-start gap-3'>
