@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from "../assets/logo-beyaz.png"
-
+import { Button } from '@heroui/react';
 const HomePage = () => {
 
     return (
@@ -13,9 +13,9 @@ const HomePage = () => {
                 </li>
                 <li>
                     <div className="flex flex-row gap-2 justify-center items-center  mt-10">
-                        <h1 className="text-green-300 min-w-52 bg-white text-center text-3xl font-bold">
+                        <Button color='success' variant='bordered' className="min-w-52 bg-white text-center text-3xl font-bold">
                             Online
-                        </h1>
+                        </Button>
                     </div>
                 </li>
             </ul>

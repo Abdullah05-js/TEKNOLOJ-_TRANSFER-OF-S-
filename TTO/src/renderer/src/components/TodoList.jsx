@@ -20,6 +20,7 @@ const TodoList = () => {
     // Custom styles for the date picker
     const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
         <button
+            type='button'
             className="text-white bg-transparent hover:border-green-300 hover:border-2 rounded-xl border-white border-2 p-2 focus:border-green-300 focus:border-2 outline-none min-w-[200px] text-left"
             onClick={onClick}
             ref={ref}

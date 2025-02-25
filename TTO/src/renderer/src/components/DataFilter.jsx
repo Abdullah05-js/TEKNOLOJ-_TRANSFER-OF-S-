@@ -58,7 +58,7 @@ const DataFilter = () => {
         setData(response);
     }
     const FetchSelectors = async () => {
-        const response = await window.electron.ipcRenderer.invoke("GetSelectors", "");
+        const response = await window.electron.ipcRenderer.invoke('GetSelectors', "");
         setAkademiks(response.Akademiks)
         setCompanies(response.Companies)
         setDealType(response.DealType)
