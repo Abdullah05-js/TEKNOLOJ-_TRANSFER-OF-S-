@@ -46,12 +46,12 @@ To install and set up the project locally, follow these steps:
 
 4. Run the application:
     ```sh
-    npm start
+    npm run dev
     ```
 
 ## Usage
 
-After installing the application, you can start using it by running the `npm start` command. The application will open in a new window. Navigate through the menus and options to explore its features.
+After installing the application, you can start using it by running the `npm run dev` command. The application will open in a new window. Navigate through the menus and options to explore its features.
 
 ## Contributing
 

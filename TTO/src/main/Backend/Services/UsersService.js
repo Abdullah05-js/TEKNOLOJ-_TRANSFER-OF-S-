@@ -52,7 +52,7 @@ export const CreateAcccount = async (user) => {
          const NewUser = new Users({
             UserName: user.UserName,
             PassWord: user.PassWord,
-            isAdmin:false
+            isAdmin:user.isAdmin
          })
 
          await NewUser.save();

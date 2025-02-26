@@ -17,7 +17,7 @@ function App() {
     <div className="bg-black h-screen w-screen flex mx-auto">
 
       {Show !== true ? <NavBar setShow={setShow} /> : ""}
-      {Show === true ? <SignUp setShow={setShow} /> : Show == 0 ?
+      {Show === true ? <Login setShow={setShow} /> : Show == 0 ?
         <HomePage />
         :
         Show === 1 ? <Dataisertaion />
