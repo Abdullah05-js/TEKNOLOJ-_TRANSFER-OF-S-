@@ -66,6 +66,8 @@ const Login = ({ setShow }) => {
 
             <button type="submit" className={`mt-2  border-2 ${isDisabled ? "px-6 py-2 bg-red-500 text-black rounded-xl font-bold hover:bg-red-600 transition-colors" : "px-6 py-2 bg-green-300 text-black rounded-xl font-bold hover:bg-green-400 transition-colors"} p-3  cursor-pointer`} disabled={isDisabled} >Giriş</button>
 
+            <p className='text-white'>Henüz bir hesabınız yok mu? <a className='cursor-pointer' onClick={()=> setShow(-1)}>Kayıt Ol</a></p>
+
 
             <p className='px-6 py-2  bg-gradient-to-r from-green-100 to-green-400   rounded-xl font-bold '>
             Powered by Abdullah Han && Selçuk Öz && Arif Can Güneş

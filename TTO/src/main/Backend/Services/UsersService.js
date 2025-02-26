@@ -48,10 +48,10 @@ export const AuthUser = async (user) => {
 
 export const CreateAcccount = async (user) => {
    try {
-
+         console.log(user);
          const NewUser = new Users({
             UserName: user.UserName,
-            PassWord: user.password,
+            PassWord: user.PassWord,
             isAdmin:false
          })
 

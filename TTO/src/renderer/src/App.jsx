@@ -6,6 +6,7 @@ import HomePage from "./components/HomePage"
 import DataFilter from "./components/DataFilter"
 import TodoList from "./components/TodoList"
 import Stats from "./components/Stats"
+import SignUp from "./components/Uİ/SignUp"
 
 
 function App() {
@@ -16,7 +17,7 @@ function App() {
     <div className="bg-black h-screen w-screen flex mx-auto">
 
       {Show !== true ? <NavBar setShow={setShow} /> : ""}
-      {Show === true ? <Login setShow={setShow} /> : Show == 0 ?
+      {Show === true ? <SignUp setShow={setShow} /> : Show == 0 ?
         <HomePage />
         :
         Show === 1 ? <Dataisertaion />
@@ -27,7 +28,7 @@ function App() {
               :
               Show === 4 ? <Stats />
                 :
-                ""
+                ''
       }
 
     </div>
