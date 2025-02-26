@@ -2,40 +2,41 @@ import Users from "../DB/Users";
 
 
 export const GetUsers = async () => {
-    try {
-        return await Users.find();
-     } catch (error) {
-        console.log("error from GetUsers:",error);
-     }
+   try {
+      return await Users.find();
+   } catch (error) {
+      console.log("error from GetUsers:", error);
+   }
 }
 
 export const SearchUser = async (user) => {
- try {
-    return await Users.findOne({
-        UserName:user
-    })
- } catch (error) {
-    console.log("error from SearchUser:",error);
- }
+   try {
+      return await Users.findOne({
+         UserName: user
+      })
+   } catch (error) {
+      console.log("error from SearchUser:", error);
+   }
 }
 
 
 export const AuthUser = async (user) => {
    try {
       const foundUser = await Users.findOne({
-          UserName: user.UserName,
+         UserName: user.UserName,
       });
 
       if (!foundUser || foundUser.PassWord !== user.password) {
-          return { success: false };
+         return { success: false };
       }
 
       return {
-          success: true,
-          user: {
-              id: foundUser._id.toString(),
-              username: foundUser.UserName
-          }
+         success: true,
+         user: {
+            id: foundUser._id.toString(),
+            username: foundUser.UserName,
+            isAdmin:foundUser.isAdmin
+         }
       };
 
    } catch (error) {
@@ -47,18 +48,19 @@ export const AuthUser = async (user) => {
 
 export const CreateAcccount = async (user) => {
    try {
-  
-      const NewUser = new Users({
-         UserName:user.UserName,
-          PassWord:user.password,
-      })
-      
-      await NewUser.save();
+
+         const NewUser = new Users({
+            UserName: user.UserName,
+            PassWord: user.password,
+            isAdmin:false
+         })
+
+         await NewUser.save();
 
       return true;
 
    } catch (error) {
-      console.log("error from  createAccount:",error);
+      console.log("error from  createAccount:", error);
       return false
    }
-  }
+}

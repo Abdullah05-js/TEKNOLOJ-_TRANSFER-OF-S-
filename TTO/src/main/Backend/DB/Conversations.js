@@ -12,13 +12,13 @@ const ConversationSchema = mongoose.Schema(
             type:String
         },
         ConversationOwner:{
-            type:String
+            type:Array
         },
         isAcademicJoined:{
             type:Boolean
         },
         AcademicName:{
-            type:String
+            type:Array
         },
         isProtocolSigned:{
             type:Boolean
@@ -39,6 +39,12 @@ const ConversationSchema = mongoose.Schema(
             type:Boolean
         },
         ACCOUNT:{
+            type:String
+        },
+        startDate:{
+            type:String
+        },
+        endDate:{
             type:String
         }
     }

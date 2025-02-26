@@ -10,6 +10,10 @@ const UsersSchema = mongoose.Schema(
         PassWord:{
             type:String,
             required:true
+        },
+        isAdmin:{
+            type:Boolean,
+            required:true
         }
     }
 )

@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import Input from './Uİ/Input';
-
+import {Select, SelectItem} from "@heroui/react";
 
 
 const Dataisertaion = () => {
 
     const [formState, setFormState] = useState({
+        Date:"",
         isArge: false,
         isContractSigned: false,
         isArgeBackStatus: false,
         isSurdurulebilirlik: false,
         isProtocolSigned: false,
         isAcademicJoined: false,
-        AcademicName: '',
+        AcademicName: [],
         CompanyNames: '',
         ContractType: '',
-        Date: '',
-        ConversationOwner: '',
+        startDate: '',
+        ConversationOwner: [],
         Sector: '',
+        endDate:"",
     });
 
     const [isNew, setisNew] = useState(false);
@@ -99,8 +101,7 @@ const Dataisertaion = () => {
                             isNew ? <Input value={formState.CompanyNames} onchange={(e) => setFormState({ ...formState, CompanyNames: e.target.value.toUpperCase() })} type={"text"} placeholder={"Firma Adını Giriniz"} />
                                 :
                                 (
-                                    <select value={formState.CompanyNames} onChange={(e) => setFormState({ ...formState, CompanyNames: e.target.value })} className='min-w-28 p-2 border-2 border-white rounded-lg outline-none focus:border-2 focus:border-green-300 bg-black text-white'>
-                                        <option value="">Firma Adı Seçiniz</option>
+                                    <Select placeholder='Firma Adı Seçiniz' label="Firma" variant='bordered' value={[formState.CompanyNames]} onChange={(e) => setFormState({ ...formState, CompanyNames: e.target.value })} color='success' className='min-w-28 outline-none  rounded-xl text-white'>
                                         {Companies.map((e, index) => {
                                             let elements = [];
                                             for (let index1 = 0; index1 < index; index1++) {
@@ -108,10 +109,11 @@ const Dataisertaion = () => {
                                             }
                                             console.log(elements);
                                             if (!elements.includes(e)) {
-                                                return <option value={e} key={index}>{e}</option>
+                                                console.log(e);
+                                                return <SelectItem key={e}>{e}</SelectItem>
                                             }
                                         })}
-                                    </select>
+                                    </Select>
                                 )
                         }
                     </div>
@@ -124,8 +126,7 @@ const Dataisertaion = () => {
                             isNew ? <Input value={formState.Sector} onchange={(e) => { setFormState({ ...formState, Sector: e.target.value.toUpperCase() }) }} type={"text"} placeholder={"Sektör Adını Giriniz"} />
                                 :
                                 (
-                                    <select value={formState.Sector} onChange={(e) => setFormState({ ...formState, Sector: e.target.value.toUpperCase() })} className='min-w-28 p-2 border-2 border-white rounded-lg outline-none focus:border-2 focus:border-green-300 bg-black text-white'>
-                                        <option value="">Sektör Seçiniz</option>
+                                    <Select placeholder='Sektör Seçiniz' label="Sektör" color='success' variant='bordered' value={[formState.Sector]} onChange={(e) => setFormState({ ...formState, Sector: e.target.value.toUpperCase() })} className='min-w-28  bg-black text-white'>
                                         {Sektor.map((e, index) => {
                                             let elements = [];
                                             for (let index1 = 0; index1 < index; index1++) {
@@ -133,10 +134,10 @@ const Dataisertaion = () => {
                                             }
                                             console.log(elements);
                                             if (!elements.includes(e)) {
-                                                return <option value={e} key={index}>{e}</option>
+                                                return <SelectItem  key={e}>{e}</SelectItem>
                                             }
                                         })}
-                                    </select>
+                                    </Select>
                                 )
                         }
 
@@ -153,9 +154,8 @@ const Dataisertaion = () => {
 
                 <li>
                     <div className='flex justify-between items-center gap-2 '>
-                        <h1 className='text-white  text-2xl font-bold'>Görüşmeyi Yapan Kişi:</h1>
-                        <select onChange={(e) => { setFormState({ ...formState, ConversationOwner: e.target.value.toUpperCase() }) }} value={formState.ConversationOwner} className='min-w-28 p-2 border-2 border-white rounded-lg outline-none focus:border-2 focus:border-green-300 bg-black text-white'>
-                            <option value="">Görüşmeyi Yapan Kişi</option>
+                        <h1 className='text-white  text-2xl font-bold'>Görüşmeyi Yapan Kişiler:</h1>
+                        <Select variant='bordered' color='success' placeholder='Görüşmeyi Yapan Kişiler' selectionMode="multiple" classNames={{value:"!text-white group-data-[has-value=true]:!text-white"}}  onChange={(e) => { setFormState({ ...formState, ConversationOwner: e.target.value.toUpperCase() }) }} value={[formState.ConversationOwner]} className='min-w-28 !text-white bg-black'>
                             {Users.map((e, index) => {
                                 let elements = [];
                                 for (let index1 = 0; index1 < index; index1++) {
@@ -163,10 +163,10 @@ const Dataisertaion = () => {
                                 }
                                 console.log(elements);
                                 if (!elements.includes(e)) {
-                                    return <option value={e.toUpperCase()} key={index}>{e.toUpperCase()}</option>
+                                    return <SelectItem key={e.toUpperCase()} >{e.toUpperCase()}</SelectItem>
                                 }
                             })}
-                        </select>
+                        </Select>
                     </div>
                 </li>
 
@@ -212,7 +212,7 @@ const Dataisertaion = () => {
                             <option value="ÖZKAYNAK">ÖZKAYNAK</option>
                             <option value="TÜBİTAK">TÜBİTAK</option>
                             <option value="PROJE YAZMA">PROJE YAZMA</option>
-                            <option value="TEKNOPARK">ÖZKAYNAK</option>
+                            <option value="TEKNOPARK">TEKNOPARK</option>
                         </select>
                     </div>
                 </li>

@@ -85,6 +85,10 @@ app.whenReady().then(async () => {
     return await AuthUser(data);
   })
 
+  ipcMain.handle("signup",async (event,data) =>{
+    return await CreateAcccount(data);
+  })
+
   ipcMain.handle("Filter", async (event, data) => {
     console.log(data);
     return await SearchConversations(data);

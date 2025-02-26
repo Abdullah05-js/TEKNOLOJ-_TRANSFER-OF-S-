@@ -19,8 +19,11 @@ const Login = ({ setShow }) => {
 
         if (response.success) {
             // Store user data in localStorage
-            localStorage.setItem('userId', response.user.id);
-            localStorage.setItem('username', response.user.username);
+            localStorage.setItem("userData",JSON.stringify({
+                userId:response.user.id,
+                username:response.user.username,
+                isAdmin:response.user.isAdmin
+            }))
             setShow(0)
         }
         else {
