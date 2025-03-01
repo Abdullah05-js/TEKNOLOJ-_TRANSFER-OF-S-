@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Input from './Uİ/Input';
 import { useEffect } from 'react';
 import { Select, SelectItem } from '@heroui/select';
+import { Pagination } from '@heroui/pagination';
 import Toast from './Uİ/Toast';
 const categories = [
     'isArge',
@@ -32,7 +33,8 @@ const DataFilter = () => {
         ConversationOwner: true,
         Sector: true,
     });
-
+    const [totalPages, setToatalPages] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
     const [formStateData, setFormStateData] = useState({
         isArge: false,
         isArgeBackStatus: false,
@@ -68,7 +70,7 @@ const DataFilter = () => {
     const [isVisible, setisVisible] = useState(false)
     const [HoveredText, setHoveredText] = useState("")
     const FetchData = async () => {
-        const response = await window.electron.ipcRenderer.invoke("Filter", FilterData);
+        const response = await window.electron.ipcRenderer.invoke("Filter", {...FilterData,page:currentPage});
         setData(response);
         console.log(FilterData);
     }
@@ -80,16 +82,20 @@ const DataFilter = () => {
         setUsers(response.Users)
         setSektor(response.Sektor)
     }
-
+    const fetchPaginition = async () => {
+        const resposne = await window.electron.ipcRenderer.invoke("getPaginition", "")
+        setToatalPages(resposne)
+    }
 
     useEffect(() => {
         FetchSelectors();
         FetchData();
+        fetchPaginition()
     }, []);
 
     useEffect(() => {
         FetchData();
-    }, [formStateData])
+    }, [formStateData,currentPage])
 
     const handleHover = (e) => {
         setHoveredText(e.target.querySelectorAll("span")[0].innerHTML)
@@ -114,7 +120,7 @@ const DataFilter = () => {
                     Object.keys(Filter).map(key => {
                         if (key === "AcademicName") {
                             return <td>
-                                <Select radius='none' placeholder='Akademisyenler' color='success' variant='bordered'  classNames={{ value:`${index % 2 === 0 ? "text-white group-data-[has-value=true]:text-white" : "text-black group-data-[has-value=true]:text-black"}` }}>
+                                <Select radius='none' placeholder='Akademisyenler' color='success' variant='bordered' classNames={{ value: `${index % 2 === 0 ? "text-white group-data-[has-value=true]:text-white" : "text-black group-data-[has-value=true]:text-black"}` }}>
                                     {e[key].map((e) => {
                                         return <SelectItem onMouseEnter={handleHover} onMouseLeave={handleHoverLeave} className='min-w-52' textValue={e} key={e}>
                                             {e}
@@ -125,17 +131,16 @@ const DataFilter = () => {
                         }
                         else if (key === "CompanyNames") {
                             return <td onMouseEnter={(target) => handleHoverTD(target, e)} onMouseLeave={handleHoverLeave} className='overflow-auto'>{e[key] === true ? "var" : e[key] === false ? "yok" : e[key]}</td>
-                        }else if(key === "ConversationOwner")
-                        {
+                        } else if (key === "ConversationOwner") {
                             return <td>
-                            <Select radius='none' placeholder='Görüşmeyi YK.' color='success' variant='bordered'  classNames={{ value:`${index % 2 === 0 ? "text-white group-data-[has-value=true]:text-white" : "text-black group-data-[has-value=true]:text-black"}` }}>
-                                {e[key].map((e) => {
-                                    return <SelectItem onMouseEnter={handleHover} onMouseLeave={handleHoverLeave} className='min-w-52' textValue={e} key={e}>
-                                        {e}
-                                    </SelectItem>
-                                })}
-                            </Select>
-                        </td>
+                                <Select radius='none' placeholder='Görüşmeyi YK.' color='success' variant='bordered' classNames={{ value: `${index % 2 === 0 ? "text-white group-data-[has-value=true]:text-white" : "text-black group-data-[has-value=true]:text-black"}` }}>
+                                    {e[key].map((e) => {
+                                        return <SelectItem onMouseEnter={handleHover} onMouseLeave={handleHoverLeave} className='min-w-52' textValue={e} key={e}>
+                                            {e}
+                                        </SelectItem>
+                                    })}
+                                </Select>
+                            </td>
                         }
                         return <td className='break-words'>{e[key] === true ? "var" : e[key] === false ? "yok" : e[key]}</td>
                     })
@@ -458,7 +463,7 @@ const DataFilter = () => {
 
 
             {/* table */}
-            <div className='flex flex-col justify-center items-center  border-t-2  border-green-300'>
+            <div className='flex flex-col justify-start items-center flex-1  border-t-2  border-green-300'>
 
 
                 <table className=' text-white p-2 '>
@@ -488,7 +493,7 @@ const DataFilter = () => {
                                         return <th className='break-words'>Görüşmeyi YK.</th>
                                     else if (e === "Sector")
                                         return <th className='break-words'>Sektör</th>
-                                        
+
 
 
 
@@ -503,6 +508,7 @@ const DataFilter = () => {
 
                 </table>
 
+                <Pagination className='m-2' color='success' onChange={setCurrentPage} variant='flat'  page={currentPage} total={totalPages} />
             </div>
 
         </div>

@@ -12,7 +12,12 @@ export const GetConversations = async () => {
 
 export const SearchConversations = async (query) => {
    try {
-      return await Conversations.find(query).lean();
+      const page = query.page;
+      delete query.page
+      const List =  await Conversations.find(query).lean();
+      const end  = page*10;
+      const start = end-10;
+      return List.splice(start,end)
    } catch (error) {
       console.log("error from SearchConversations:", error);
       return []

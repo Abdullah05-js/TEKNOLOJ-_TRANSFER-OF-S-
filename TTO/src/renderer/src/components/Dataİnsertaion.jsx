@@ -60,14 +60,20 @@ const Dataisertaion = () => {
             if(FormstateData.CompanyNames.length <= 0)
             {
                 alert("Şirket ismini seçiniz/giriniz")
+                setisLoading((e) => !e)
+                return;
             }
             if(FormstateData.isContractSigned && FormstateData.ContractType.length <= 0)
             {
                 alert("Anlaşma türünü seçiniz/giriniz")
+                setisLoading((e) => !e)
+                return;
             }
             if(FormstateData.Sector.length <= 0)
             {
                 alert("Sektör seçiniz/giriniz")
+                setisLoading((e) => !e)
+                return;
             }
             FormstateData["AcademicName"] =  FormstateData.AcademicName.split(",").map((e) => {
                 return e.trim()

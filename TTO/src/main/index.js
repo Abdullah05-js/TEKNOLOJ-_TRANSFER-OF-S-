@@ -123,7 +123,10 @@ app.whenReady().then(async () => {
     return ReturnList;
   })
 
-
+  ipcMain.handle("getPaginition",async (event,data) => {
+    const allConVersations = await GetConversations();
+    return Math.ceil(allConVersations.length/10) === 0 ? 1 : Math.ceil(allConVersations.length/10)
+  })
 
   ipcMain.handle("GetFilter", async (event, data) => {
     const List = await GetConversations();
