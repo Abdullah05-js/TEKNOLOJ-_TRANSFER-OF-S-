@@ -5,7 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import connectDB from './Backend/DB/ConnectDB'
 import { AuthUser, CreateAcccount } from './Backend/Services/UsersService.js'
 import { SearchConversations, SetConversation, GetSelectors, GetConversations } from "./Backend/Services/ConversationsService.js"
-import { CreateTodo, GetUserTodos, UpdateTodoStatus, DeleteTodo, getTodoForDate ,getUserFromID} from "./Backend/Services/TodoService.js"
+import { CreateTodo, GetUserTodos, UpdateTodoStatus, DeleteTodo, getTodoForDate } from "./Backend/Services/TodoService.js"
 import path from 'path'
 import fs from 'fs'
 import { Buffer } from 'buffer'
@@ -193,10 +193,6 @@ app.whenReady().then(async () => {
   ipcMain.handle("DeleteTodo", async (event, todoId) => {
     console.log('Deleting todo:', todoId);
     return await DeleteTodo(todoId);
-  })
-
-  ipcMain.handle("getUserFromID",async (event,data) => {
-    return await getUserFromID(data.id)
   })
 
   //---------------------------------------------------------------------------

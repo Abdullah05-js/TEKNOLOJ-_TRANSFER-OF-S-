@@ -58,7 +58,7 @@ const TodoList = () => {
 
         try {
             setError(null);
-            const userId = localStorage.getItem('userId');
+            const userId = JSON.parse(localStorage.getItem('userData')).userId
             if (!userId) {
                 setError('Oturum bulunamadı. Lütfen tekrar giriş yapın.');
                 return;
@@ -190,7 +190,7 @@ const TodoList = () => {
                             <div className={`flex flex-col ${todo.completed ? 'line-through text-gray-400' : 'text-white'}`}>
                                 <span className='font-medium'>{todo.description}</span>
                                 <div className='text-sm flex gap-4'>
-                                    <span>Oluşturan: {todo.UserName}</span>
+                                    <span>Oluşturan: {todo.userId.UserName}</span>
                                     <span>Oluşturma: {new Date(todo.createdAt).toLocaleDateString('tr-TR')}</span>
                                     <span>Bitiş: {new Date(todo.deadline).toLocaleDateString('tr-TR')}</span>
                                 </div>

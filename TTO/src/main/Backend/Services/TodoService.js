@@ -2,15 +2,16 @@ import Todo from '../DB/Todos.js';
 import mongoose from 'mongoose';
 
 // Helper function to clean the todo object
-const cleanTodoForIPC = async(todo) => {
+const cleanTodoForIPC = (todo) => {
     if (!todo) return null;
     const cleanedTodo = todo.toObject();
-    const UserName = await getUserFromID(cleanedTodo._id)
     return {
         ...cleanedTodo,
         _id: cleanedTodo._id.toString(),
-        userId: cleanedTodo.userId,
-        UserName
+        userId: cleanedTodo.userId?._id ? {
+            _id: cleanedTodo.userId._id.toString(),
+            UserName: cleanedTodo.userId.UserName
+        } : cleanedTodo.userId
     };
 };
 
@@ -37,9 +38,9 @@ export const GetUserTodos = async () => {
     try {
         const todos = await Todo.find()
             .sort({ createdAt: -1 })
-            .populate('userId', 'UserName');
-        
-        return todos.map(cleanTodoForIPC);
+            .populate('userId', 'UserName'); // userId users ları referans etti için 
+    console.log(todos);
+        return todos.map(cleanTodoForIPC)
     } catch (error) {
         console.error('Error fetching todos:', error);
         return [];
@@ -102,13 +103,3 @@ export const getTodoForDate = async (year,month) => {
         return [];
     }
 }; 
-
-export const getUserFromID = async (id) => {
-try {
-    const user = await findOne({_id:id}).lean()
-    return user
-} catch (error) {
-    console.log("error gettind user");
-    return ""
-}
-}
