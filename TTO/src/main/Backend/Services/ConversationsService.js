@@ -20,22 +20,8 @@ export const SearchConversations = async (query) => {
 
 export const SetConversation = async (data) => {
    try {
-      
-      const newData = {...data};
-      delete newData.CompanyNames
-      if(!data.isNew)
-      {
-         await Conversations.findOneAndUpdate(
-            { CompanyNames: data.CompanyNames }, 
-            { $set: newData },          
-        );
-
-      }
-      else{
-         const newConversation = new Conversations(data)
-         await newConversation.save()
-      }
-
+      const newConversation = new Conversations(data)
+      await newConversation.save()
       return true
    } catch (error) {
       console.log("error from SearchUser:", error);

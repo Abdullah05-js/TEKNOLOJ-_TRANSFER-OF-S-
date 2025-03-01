@@ -12,6 +12,9 @@ const HomePage = () => {
                     <img src={logo} alt="logo" />
                 </li>
                 <li>
+                    <h1 className='text-white font-bold text-xl text-center'>Hoşgeldin {JSON.parse(localStorage.getItem("userData")).username}</h1>
+                </li>
+                <li>
                     <div className="flex flex-row gap-2 justify-center items-center  mt-10">
                         <Button color='success' variant='bordered' className="min-w-52 bg-white text-center text-3xl font-bold">
                             Online

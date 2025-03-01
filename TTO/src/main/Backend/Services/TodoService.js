@@ -2,16 +2,15 @@ import Todo from '../DB/Todos.js';
 import mongoose from 'mongoose';
 
 // Helper function to clean the todo object
-const cleanTodoForIPC = (todo) => {
+const cleanTodoForIPC = async(todo) => {
     if (!todo) return null;
     const cleanedTodo = todo.toObject();
+    const UserName = await getUserFromID(cleanedTodo._id)
     return {
         ...cleanedTodo,
         _id: cleanedTodo._id.toString(),
-        userId: cleanedTodo.userId?._id ? {
-            _id: cleanedTodo.userId._id.toString(),
-            UserName: cleanedTodo.userId.UserName
-        } : cleanedTodo.userId
+        userId: cleanedTodo.userId,
+        UserName
     };
 };
 
@@ -103,3 +102,13 @@ export const getTodoForDate = async (year,month) => {
         return [];
     }
 }; 
+
+export const getUserFromID = async (id) => {
+try {
+    const user = await findOne({_id:id}).lean()
+    return user
+} catch (error) {
+    console.log("error gettind user");
+    return ""
+}
+}

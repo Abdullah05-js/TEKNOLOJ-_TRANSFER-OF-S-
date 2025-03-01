@@ -20,6 +20,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
+    "@heroui/date-picker": "^2.3.13",
     "@heroui/react": "^2.7.2",
     "@heroui/select": "^2.4.13",
     "@heroui/system": "^2.4.10",
