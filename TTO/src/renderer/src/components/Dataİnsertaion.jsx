@@ -14,7 +14,7 @@ const Dataisertaion = () => {
         isSurdurulebilirlik: false,
         isProtocolSigned: false,
         isAcademicJoined: false,
-        AcademicName: [],
+        AcademicName: "",
         CompanyNames: '',
         ContractType: '',
         startDate: '',
@@ -61,7 +61,7 @@ const Dataisertaion = () => {
             {
                 alert("Şirket ismini seçiniz/giriniz")
             }
-            if(isContractSigned && FormstateData.ContractType.length <= 0)
+            if(FormstateData.isContractSigned && FormstateData.ContractType.length <= 0)
             {
                 alert("Anlaşma türünü seçiniz/giriniz")
             }
@@ -70,6 +70,9 @@ const Dataisertaion = () => {
                 alert("Sektör seçiniz/giriniz")
             }
             FormstateData["AcademicName"] =  FormstateData.AcademicName.split(",").map((e) => {
+                return e.trim()
+            })
+            FormstateData["ConversationOwner"] =  FormstateData.ConversationOwner.split(",").map((e) => {
                 return e.trim()
             })
             if (FormstateData.ContractType === "") {

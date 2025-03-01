@@ -114,7 +114,7 @@ const DataFilter = () => {
                     Object.keys(Filter).map(key => {
                         if (key === "AcademicName") {
                             return <td>
-                                <Select radius='none' defaultSelectedKeys={[e[key][0]]} color='success' variant='bordered' classNames={{ value: `${index % 2 == 0 ? "text-white group-data-[has-value=true]:text-white" : "text-black group-data-[has-value=true]:text-black"}` }}>
+                                <Select radius='none' placeholder='Akademisyenler' color='success' variant='bordered'  classNames={{ value:`${index % 2 === 0 ? "text-white group-data-[has-value=true]:text-white" : "text-black group-data-[has-value=true]:text-black"}` }}>
                                     {e[key].map((e) => {
                                         return <SelectItem onMouseEnter={handleHover} onMouseLeave={handleHoverLeave} className='min-w-52' textValue={e} key={e}>
                                             {e}
@@ -125,6 +125,17 @@ const DataFilter = () => {
                         }
                         else if (key === "CompanyNames") {
                             return <td onMouseEnter={(target) => handleHoverTD(target, e)} onMouseLeave={handleHoverLeave} className='overflow-auto'>{e[key] === true ? "var" : e[key] === false ? "yok" : e[key]}</td>
+                        }else if(key === "ConversationOwner")
+                        {
+                            return <td>
+                            <Select radius='none' placeholder='Görüşmeyi YK.' color='success' variant='bordered'  classNames={{ value:`${index % 2 === 0 ? "text-white group-data-[has-value=true]:text-white" : "text-black group-data-[has-value=true]:text-black"}` }}>
+                                {e[key].map((e) => {
+                                    return <SelectItem onMouseEnter={handleHover} onMouseLeave={handleHoverLeave} className='min-w-52' textValue={e} key={e}>
+                                        {e}
+                                    </SelectItem>
+                                })}
+                            </Select>
+                        </td>
                         }
                         return <td className='break-words'>{e[key] === true ? "var" : e[key] === false ? "yok" : e[key]}</td>
                     })

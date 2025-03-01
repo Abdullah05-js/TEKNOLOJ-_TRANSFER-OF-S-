@@ -12,7 +12,7 @@ const ConversationSchema = mongoose.Schema(
             type:String
         },
         ConversationOwner:{
-            type:String
+            type:Array
         },
         isAcademicJoined:{
             type:Boolean

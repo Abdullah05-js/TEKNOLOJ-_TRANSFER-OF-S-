@@ -5,7 +5,8 @@ export const GetConversations = async () => {
    try {
       return await Conversations.find().lean();
    } catch (error) {
-      console.log("error from SearchUser:", error);
+      console.log("error from GetConversations", error);
+      return []
    }
 }
 
@@ -13,7 +14,8 @@ export const SearchConversations = async (query) => {
    try {
       return await Conversations.find(query).lean();
    } catch (error) {
-      console.log("error from SearchUser:", error);
+      console.log("error from SearchConversations:", error);
+      return []
    }
 }
 
@@ -24,7 +26,7 @@ export const SetConversation = async (data) => {
       await newConversation.save()
       return true
    } catch (error) {
-      console.log("error from SearchUser:", error);
+      console.log("error from SetConversation:", error);
       return false
    }
 }
