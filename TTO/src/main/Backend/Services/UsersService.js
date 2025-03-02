@@ -19,6 +19,14 @@ export const SearchUser = async (user) => {
    }
 }
 
+export const DeleteUser = async (user) => {
+   try {
+      return await Users.findByIdAndDelete(user._id)
+   } catch (error) {
+      console.log("error from DeleteUser");
+   }
+}
+
 
 export const AuthUser = async (user) => {
    try {
