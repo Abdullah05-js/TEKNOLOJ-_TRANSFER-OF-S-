@@ -3,8 +3,8 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import connectDB from './Backend/DB/ConnectDB'
-import { AuthUser, CreateAcccount , DeleteUser , GetUsers} from './Backend/Services/UsersService.js'
-import { SearchConversations, SetConversation, GetSelectors, GetConversations } from "./Backend/Services/ConversationsService.js"
+import { AuthUser, CreateAcccount , DeleteUser , GetUsers , UpdatePassword} from './Backend/Services/UsersService.js'
+import { SearchConversations, SetConversation, GetSelectors, GetConversations , SetOneConversation , GetOneConversation} from "./Backend/Services/ConversationsService.js"
 import { CreateTodo, GetUserTodos, UpdateTodoStatus, DeleteTodo, getTodoForDate } from "./Backend/Services/TodoService.js"
 import path from 'path'
 import fs from 'fs'
@@ -93,6 +93,17 @@ app.whenReady().then(async () => {
     return await SearchConversations(data);
   })
 
+  ipcMain.handle("UpdatePassword",async (event,data) => {
+    return await UpdatePassword(data.id,data.newPassWord)
+  })
+
+  ipcMain.handle("SetOneConversation", async(event,req) => {
+    return await SetOneConversation(req.data,req.id)
+  })
+
+  ipcMain.handle("GetOneConversation", async(event,userId) => {
+    return await GetOneConversation(userId)
+  })
   ipcMain.handle("SetConversation", async (event, data) => {
     return await SetConversation(data);
   })

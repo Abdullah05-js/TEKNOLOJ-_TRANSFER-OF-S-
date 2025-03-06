@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { Select, SelectItem } from '@heroui/select';
 import { Pagination } from '@heroui/pagination';
 import Toast from './Uİ/Toast';
+import { Button } from '@heroui/react';
 const categories = [
     'isArge',
     'isArgeBackStatus',
@@ -71,7 +72,7 @@ const DataFilter = () => {
     const [HoveredText, setHoveredText] = useState("")
     const FetchData = async () => {
         const response = await window.electron.ipcRenderer.invoke("Filter", {...FilterData,page:currentPage});
-        setData(response);
+        setData(JSON.parse(response));
         console.log(FilterData);
     }
     const FetchSelectors = async () => {
@@ -112,10 +113,14 @@ const DataFilter = () => {
 
 
     const ReturnList = Data?.map((e, index) => {
+        console.log(e);
         return (
             <tr key={index}>
 
-                <td className='w-9'>{index + 1}</td>
+                <td className='w-9'><button onClick={() => {
+                    navigator.clipboard.writeText(e._id)
+                    alert("kopyalandı")
+                }}>{index + 1}</button></td>
                 {
                     Object.keys(Filter).map(key => {
                         if (key === "AcademicName") {

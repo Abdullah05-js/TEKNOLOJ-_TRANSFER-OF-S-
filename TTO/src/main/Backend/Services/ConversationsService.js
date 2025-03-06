@@ -5,7 +5,7 @@ export const GetConversations = async () => {
    try {
       return await Conversations.find().lean();
    } catch (error) {
-      console.log("error from GetConversations", error);
+      console.log("error from GetConversations ", error);
       return []
    }
 }
@@ -14,16 +14,40 @@ export const SearchConversations = async (query) => {
    try {
       const page = query.page;
       delete query.page
-      const List =  await Conversations.find(query).lean();
+      const List =  await Conversations.find(query)
       const end  = page*10;
       const start = end-10;
-      return List.splice(start,end)
+      return JSON.stringify(List.splice(start,end)) // i did this becouse i got som error the _id was coming as a buffer
    } catch (error) {
-      console.log("error from SearchConversations:", error);
+      console.log("error from SearchConversations: ", error);
       return []
    }
 }
 
+export const SetOneConversation = async (data,id) => {
+try {
+   await Conversations.findOneAndUpdate({
+      _id:id
+   },data)
+   return true
+} catch (error) {
+   console.log("error from SetOneConversation: ",error)
+   return false
+}
+}
+
+export const GetOneConversation = async (id) => {
+   try {
+      const response = await Conversations.findOne({_id:id})
+      if(response)
+         return response
+      else
+         return false
+   } catch (error) {
+      console.log("error from GetOneConversation: ",error)
+      return  false  
+   }
+} 
 
 export const SetConversation = async (data) => {
    try {
@@ -31,7 +55,7 @@ export const SetConversation = async (data) => {
       await newConversation.save()
       return true
    } catch (error) {
-      console.log("error from SetConversation:", error);
+      console.log("error from SetConversation: ", error);
       return false
    }
 }

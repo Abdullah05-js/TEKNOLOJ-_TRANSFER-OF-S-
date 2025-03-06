@@ -53,6 +53,19 @@ export const AuthUser = async (user) => {
    }
 }
 
+export const UpdatePassword= async (id,newPassWord)=> {
+   try {
+      await Users.findOneAndUpdate({
+         _id:id
+      },{
+         PassWord:newPassWord
+      })
+      return true
+   } catch (error) {
+      console.log("error from UpdateAccount: ",error);
+      return false
+   }
+}
 
 export const CreateAcccount = async (user) => {
    try {
