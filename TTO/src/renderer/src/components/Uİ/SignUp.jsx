@@ -6,7 +6,8 @@ const SignUp = ({ setShow }) => {
     const [formData, setFormData] = useState({
         username: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        isAdmin: false
     });
 
     const [usernameError, setUsernameError] = useState(null);
@@ -43,8 +44,10 @@ const SignUp = ({ setShow }) => {
         const data = {
             UserName: formData.username,
             PassWord: formData.password,
-            isAdmin: true
+            isAdmin: formData.isAdmin
         }
+
+        console.log(data);
 
         const response = await window.electron.ipcRenderer.invoke('signup', data );
         
@@ -72,7 +75,7 @@ const SignUp = ({ setShow }) => {
     }
 
     return (
-        <div className='w-screen h-screen flex flex-col py-28 items-center gap-6'>
+        <div className='w-[80%] flex flex-col items-center gap-6 overflow-y-auto scrollbar-hide'>
             <div className='flex flex-col w-[60%] max-w-[350px] px-5 py-3'>
                 <div className='flex justify-center'>
                     <WebsiteIcon />
@@ -94,6 +97,13 @@ const SignUp = ({ setShow }) => {
                         <input onChange={handleChange} className='placeholder-gray-600 px-3 py-2 outline-blue-300 text-gray-800' type="password" name='confirmPassword' id='confirmPassword' placeholder='Lütfen şifrenizi tekrardan giriniz.'/>
                         {passwordConfirmError && (<p className='text-white text-sm'>{passwordConfirmError}</p>)}
                         {passwordDontMatchError && (<p className='text-white text-sm'>{passwordDontMatchError}</p>)}
+                    </div>
+                    <div className='flex flex-col text-white gap-2'>
+                        <label htmlFor="isAdmin">Admin Yetkisi Verilecek Mi?</label>
+                        <select onChange={handleChange} className='placeholder-gray-600 px-3 py-2 outline-blue-300 text-gray-800' name="isAdmin" id='isAdmin'>
+                            <option value="true">Evet</option>
+                            <option value="false">Hayır</option>
+                        </select>
                     </div>
 
                     <button type='button' onClick={handleSubmit} className='text-white border border-white w-[50%] text-lg font-semibold mx-auto mt-5 px-3 py-2 hover:bg-white hover:text-black transition-colors ease-in-out duration-300'>Kayıt Ol</button>

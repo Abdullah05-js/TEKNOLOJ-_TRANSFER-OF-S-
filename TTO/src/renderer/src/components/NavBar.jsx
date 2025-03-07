@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { WebsiteIcon, HomeIcon, PostIcons, SearchIcon, TodoIcon, StatsIcon } from "../assets/icons.jsx"
+import { RiAdminLine } from 'react-icons/ri';
+
 const NavBar = ({ setShow }) => {
 
+    const userData = localStorage.getItem('userData');
+    const user = JSON.parse(userData);
 
     return (
         <div className='w-28 h-screen border-green-300 border-r-2 flex flex-col justify-center items-center gap-16'>
@@ -31,6 +35,11 @@ const NavBar = ({ setShow }) => {
                 <li className='flex justify-center'>
                     <button title='İSTATİSTİKLER' onClick={() => setShow(4)}>
                         <StatsIcon width={48} height={48} />
+                    </button>
+                </li>
+                <li className='flex justify-center text-green-400'>
+                    <button className='' title='Admin Page' onClick={()=> setShow(5)}>
+                        <RiAdminLine size={40}/>
                     </button>
                 </li>
             </ul>

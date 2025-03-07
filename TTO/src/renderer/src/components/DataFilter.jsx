@@ -498,10 +498,6 @@ const DataFilter = () => {
                                         return <th className='break-words'>Görüşmeyi YK.</th>
                                     else if (e === "Sector")
                                         return <th className='break-words'>Sektör</th>
-
-
-
-
                                 })
                             }
                         </tr>

@@ -25,7 +25,6 @@ const Login = ({ setShow }) => {
                 username:response.user.username,
                 isAdmin:response.user.isAdmin
             }))
-            setisLoading((e) => !e)
             setShow(0)
         }
         else {
@@ -36,9 +35,12 @@ const Login = ({ setShow }) => {
             setShowError(true)
 
             setTimeout(() => {
-                setShowError(false)
+                setShowError(false);
             }, 1000);
+
         }
+
+        setisLoading((e) => !e)
 
     }
 

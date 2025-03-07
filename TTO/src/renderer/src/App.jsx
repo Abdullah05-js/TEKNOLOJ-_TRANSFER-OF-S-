@@ -7,6 +7,7 @@ import DataFilter from "./components/DataFilter"
 import TodoList from "./components/TodoList"
 import Stats from "./components/Stats"
 import SignUp from "./components/Uİ/SignUp"
+import AdminDashboard from "./components/AdminDashboard"
 
 
 function App() {
@@ -27,6 +28,8 @@ function App() {
             Show === 3 ? <TodoList />
               :
               Show === 4 ? <Stats />
+                :
+                Show === 5 ? <AdminDashboard/>
                 :
                 ''
       }

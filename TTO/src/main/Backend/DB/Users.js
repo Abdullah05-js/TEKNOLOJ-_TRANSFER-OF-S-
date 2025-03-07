@@ -2,7 +2,6 @@ import mongoose from "mongoose"
 
 const UsersSchema = mongoose.Schema(
     {
-        
         UserName:{
             type:String,
             required:true
