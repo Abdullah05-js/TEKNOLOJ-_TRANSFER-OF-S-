@@ -3,7 +3,7 @@ import Users from "../DB/Users";
 
 export const GetUsers = async () => {
    try {
-      return await Users.find();
+      return JSON.stringify(await Users.find().lean());
    } catch (error) {
       console.log("error from GetUsers:", error);
    }

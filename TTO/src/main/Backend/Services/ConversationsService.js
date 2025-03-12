@@ -40,7 +40,7 @@ export const GetOneConversation = async (id) => {
    try {
       const response = await Conversations.findOne({_id:id})
       if(response)
-         return response
+         return JSON.stringify(response);
       else
          return false
    } catch (error) {
@@ -73,7 +73,8 @@ export const GetSelectors = async () => {
    try {
 
       const AllData = await GetConversations();
-      const AllUsers = await GetUsers();
+      const response = await GetUsers();
+      const AllUsers = JSON.parse(response);
 
       AllData.forEach(e => {
          Data.Akademiks.push(e.AcademicName)

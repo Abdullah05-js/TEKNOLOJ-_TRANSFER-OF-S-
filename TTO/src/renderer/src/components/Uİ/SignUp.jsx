@@ -47,6 +47,8 @@ const SignUp = ({ setShow }) => {
             isAdmin: formData.isAdmin
         }
 
+        console.log(formData);
+
         console.log(data);
 
         const response = await window.electron.ipcRenderer.invoke('signup', data );
@@ -54,9 +56,11 @@ const SignUp = ({ setShow }) => {
     }
 
     const handleChange = (e) => {
+        console.log(e.target.name);
+        console.log(e.target.value);
         setFormData({
           ...formData,
-          [e.target.name]: e.target.value,
+          [e.target.name]: e.target.value === 'true' ? true : e.target.value === 'false' ? false : e.target.value,
         });
 
         if(formData.username.trim() !== '' ){
@@ -100,9 +104,9 @@ const SignUp = ({ setShow }) => {
                     </div>
                     <div className='flex flex-col text-white gap-2'>
                         <label htmlFor="isAdmin">Admin Yetkisi Verilecek Mi?</label>
-                        <select onChange={handleChange} className='placeholder-gray-600 px-3 py-2 outline-blue-300 text-gray-800' name="isAdmin" id='isAdmin'>
-                            <option value="true">Evet</option>
-                            <option value="false">Hayır</option>
+                        <select value={formData.isAdmin} onChange={handleChange} className='placeholder-gray-600 px-3 py-2 outline-blue-300 text-gray-800' name="isAdmin" id='isAdmin'>
+                            <option value={true}>Evet</option>
+                            <option value={false}>Hayır</option>
                         </select>
                     </div>
 

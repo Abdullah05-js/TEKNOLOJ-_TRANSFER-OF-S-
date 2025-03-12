@@ -62,7 +62,7 @@ const Login = ({ setShow }) => {
 
             <p className='bg-gradient-to-r from-green-100 to-green-400 text-4xl font-bold bg-clip-text text-transparent h-12'>Teknoloji Transfer Ofisi</p>
 
-            <Input type={"text"} placeholder={"Kullancı Adı"} onchange={(e) => setData({ ...Data, UserName: e.target.value })} value={Data.UserName} />
+            <Input type={"text"} placeholder={"Kullanıcı Adı"} onchange={(e) => setData({ ...Data, UserName: e.target.value })} value={Data.UserName} />
 
             <Input type={"password"} placeholder={"Şifre"} onchange={(e) => setData({ ...Data, password: e.target.value })} value={Data.password} />
 

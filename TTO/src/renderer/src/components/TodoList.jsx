@@ -36,7 +36,7 @@ const TodoList = () => {
     const fetchTodos = async () => {
         try {
             setError(null);
-            const fetchedTodos = await window.electron.ipcRenderer.invoke('GetUserTodos');
+            const fetchedTodos = await window.electron.ipcRenderer.invoke('GetUserTodos',"");
             console.log('Fetched todos:', fetchedTodos);
             if (Array.isArray(fetchedTodos)) {
                 setTodos(fetchedTodos);

@@ -37,8 +37,8 @@ const NavBar = ({ setShow }) => {
                         <StatsIcon width={48} height={48} />
                     </button>
                 </li>
-                <li className='flex justify-center text-green-400'>
-                    <button className='' title='Admin Page' onClick={()=> setShow(5)}>
+                <li className={`${!user.isAdmin ? 'hidden' : 'flex justify-center text-green-400'}`}>
+                    <button  title='Admin Page' onClick={()=> setShow(5)}>
                         <RiAdminLine size={40}/>
                     </button>
                 </li>

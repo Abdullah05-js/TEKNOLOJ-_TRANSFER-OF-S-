@@ -62,6 +62,15 @@ export const UpdateTodoStatus = async (todoId, completed) => {
     }
 };
 
+export const deleteAll = async () => {
+    try {
+       await Todo.deleteMany({})
+       return []
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export const DeleteTodo = async (todoId) => {
     try {
         // Convert string ID to ObjectId if it's not already
