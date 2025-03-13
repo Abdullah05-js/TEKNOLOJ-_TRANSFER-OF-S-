@@ -85,3 +85,22 @@ export const CreateAcccount = async (user) => {
       return false
    }
 }
+
+export const GetAllUserNames = async () => {
+   try {
+      const AllUsers = await Users.find({})
+
+      if(!AllUsers)
+         return []
+
+
+      const AllUserNames = AllUsers.map((e) => {
+         return e.UserName
+      })
+
+      return AllUserNames
+   } catch (error) {
+      console.log(object);
+      return []
+   }
+}

@@ -3,7 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import connectDB from './Backend/DB/ConnectDB'
-import { AuthUser, CreateAcccount , DeleteUser , GetUsers , UpdatePassword} from './Backend/Services/UsersService.js'
+import { AuthUser, CreateAcccount , DeleteUser , GetUsers , UpdatePassword, GetAllUserNames} from './Backend/Services/UsersService.js'
 import { SearchConversations, SetConversation, GetSelectors, GetConversations , SetOneConversation , GetOneConversation} from "./Backend/Services/ConversationsService.js"
 import { CreateTodo, GetUserTodos, UpdateTodoStatus, DeleteTodo, getTodoForDate ,deleteAll } from "./Backend/Services/TodoService.js"
 import path from 'path'
@@ -91,6 +91,10 @@ app.whenReady().then(async () => {
 
   ipcMain.handle("Filter", async (event, data) => {
     return await SearchConversations(data);
+  })
+
+  ipcMain.handle("GetAllUserNames",async(event,date) => {
+    return await GetAllUserNames();
   })
 
   ipcMain.handle("UpdatePassword",async (event,data) => {

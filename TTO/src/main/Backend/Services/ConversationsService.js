@@ -10,6 +10,8 @@ export const GetConversations = async () => {
    }
 }
 
+
+
 export const SearchConversations = async (query) => {
    try {
       const page = query.page;
@@ -59,8 +61,6 @@ export const SetConversation = async (data) => {
       return false
    }
 }
-
-
 
 export const GetSelectors = async () => {
    const Data = {

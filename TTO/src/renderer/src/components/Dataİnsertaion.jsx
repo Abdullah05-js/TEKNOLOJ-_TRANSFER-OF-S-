@@ -1,322 +1,453 @@
 import { useState, useEffect } from 'react';
-import Input from './Uİ/Input';
+import { Input } from '@heroui/react';
 import { Select, SelectItem } from "@heroui/react";
 import { DateRangePicker } from "@heroui/react";
-import { parseDate } from "@internationalized/date";
+import { EthiopicAmeteAlemCalendar, parseDate } from "@internationalized/date";
 import { Spinner } from '@heroui/react';
+import { Button } from '@heroui/button';
+import { NumberInput } from '@heroui/react';
 const Dataisertaion = () => {
 
     const [formState, setFormState] = useState({
         Date: "",
-        isArge: false,
-        isContractSigned: false,
-        isArgeBackStatus: false,
-        isSurdurulebilirlik: false,
+        Contract: {
+            isContractSigned: false,
+            ContractType: "",
+            startDate: "",
+            endDate: "",
+            Amount: 0
+        },
+        Teklif: {
+            isTeklif: false,
+            startDate: "",
+            endDate: "",
+        },
+        Academics: {
+            isAcademicJoined: false,
+            AcademicNames: "",
+        },
+        isGelistirme: false,
         isProtocolSigned: false,
-        isAcademicJoined: false,
-        AcademicName: "",
-        CompanyNames: '',
-        ContractType: '',
-        startDate: '',
-        ConversationOwner: "",
-        Sector: '',
-        endDate: "",
+        CompanyNames: "",
+        ConversationOwners: "",
+        isArge: false,
+        ConversationDetails: ""
     });
     const [ContractDate, setContractDate] = useState({
         start: parseDate("2005-12-30"),
         end: parseDate("2005-12-30")
     })
-    const [isNew, setisNew] = useState(false);
-    const [isLoading,setisLoading] = useState(false)
-    const [Akademiks, setAkademiks] = useState([]);
-    const [Companies, setCompanies] = useState([]);
-    const [Users, setUsers] = useState([]);
-    const [Sektor, setSektor] = useState([]);
-    const [isSuccess, setisSuccess] = useState("");
-
-
-    const FetchSelectors = async () => {
-        setisLoading((e) => !e)
-        const response = await window.electron.ipcRenderer.invoke("GetSelectors", "");
-        setAkademiks(response.Akademiks)
-        setCompanies(response.Companies)
-        setUsers(response.Users)
-        setSektor(response.Sektor)
-        setisLoading((e) => !e)
-    }
+    const [isDiger, setisDiger] = useState(false)
+    const [isNew, setisNew] = useState(false)
+    const [isSuccees, setisSuccess] = useState("")
+    const [selectorAna, setselectorAna] = useState("")
+    const [UserNames, setUserNames] = useState(["123", "abdullah", "ahemt"])
+    const [AmountTR, setAmountTR] = useState(0)
 
     useEffect(() => {
-        FetchSelectors();
-    }, []);
+        try {
+            //setUserNames(getAllUserN())
 
+        } catch (error) {
+            console.log("use effect 1: ", error);
+        }
+    }, [])
+
+    const handleAna = (e) => {
+        setselectorAna(e.target.value)
+        console.log(e.target.value);
+        switch (e.target.value) {
+            case "iş Geliştirme":
+
+                setFormState({
+                    ...formState, isGelistirme: true,
+                    Teklif: {
+                        isTeklif: false,
+                        startDate: "",
+                        endDate: "",
+                    },
+                    Contract: {
+                        isContractSigned: false,
+                        ContractType: "",
+                        startDate: "",
+                        endDate: "",
+                        Amount: 0
+                    },
+                    isProtocolSigned: false
+                })
+
+                break
+
+            case "Teklif":
+
+                setFormState({
+                    ...formState, Teklif: {
+                        isTeklif: true,
+                        startDate: "",
+                        endDate: ""
+                    },
+                    isGelistirme: false,
+                    Contract: {
+                        isContractSigned: false,
+                        ContractType: "",
+                        startDate: "",
+                        endDate: "",
+                        Amount: 0
+                    },
+                    isProtocolSigned: false
+                })
+                break
+            case "Sözleşme":
+
+                setFormState({
+                    ...formState, Teklif: {
+                        isTeklif: false,
+                        startDate: "",
+                        endDate: ""
+                    },
+                    isGelistirme: false,
+                    Contract: {
+                        isContractSigned: true,
+                        ContractType: "",
+                        startDate: "",
+                        endDate: "",
+                        Amount: 0
+                    },
+                    isProtocolSigned: false
+                })
+
+                break
+
+            case "Protokol":
+
+                setFormState({
+                    ...formState, Teklif: {
+                        isTeklif: false,
+                        startDate: "",
+                        endDate: ""
+                    },
+                    isGelistirme: false,
+                    Contract: {
+                        isContractSigned: false,
+                        ContractType: "",
+                        startDate: "",
+                        endDate: "",
+                        Amount: 0
+                    },
+                    isProtocolSigned: true
+                })
+                break
+            default:
+
+                setFormState({
+                    ...formState, Teklif: {
+                        isTeklif: false,
+                        startDate: "",
+                        endDate: ""
+                    },
+                    isGelistirme: false,
+                    Contract: {
+                        isContractSigned: false,
+                        ContractType: "",
+                        startDate: "",
+                        endDate: "",
+                        Amount: 0
+                    },
+                    isProtocolSigned: false
+                })
+
+
+        }
+    }
+
+    const handleContractTpye = (e) => {
+
+        if (e.target.value !== "Diğer") {
+            setFormState({ ...formState, Contract: { ...formState.Contract, ContractType: e.target.value.toUpperCase() } })
+            setisDiger(false)
+            return;
+        }
+        setFormState({ ...formState, Contract: { ...formState.Contract, ContractType:""} })
+        setisDiger(true)
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            setisLoading((e) => !e)
-            const FormstateData = { ...formState }
-            FormstateData["startDate"] = ContractDate.start.year === "2005" ? "" : ContractDate.start.toString();
-            FormstateData["endDate"] = ContractDate.start.year === "2005" ? "" : ContractDate.end.toString();
-            if(FormstateData.CompanyNames.length <= 0)
-            {
-                alert("Şirket ismini seçiniz/giriniz")
-                setisLoading((e) => !e)
-                return;
-            }
-            if(FormstateData.isContractSigned && FormstateData.ContractType.length <= 0)
-            {
-                alert("Anlaşma türünü seçiniz/giriniz")
-                setisLoading((e) => !e)
-                return;
-            }
-            if(FormstateData.Sector.length <= 0)
-            {
-                alert("Sektör seçiniz/giriniz")
-                setisLoading((e) => !e)
-                return;
-            }
-            FormstateData["AcademicName"] =  FormstateData.AcademicName.split(",").map((e) => {
-                return e.trim()
-            })
-            FormstateData["ConversationOwner"] =  FormstateData.ConversationOwner.split(",").map((e) => {
-                return e.trim()
-            })
-            if (FormstateData.ContractType === "") {
-                FormstateData.ContractType = "Anlaşma yok"
-            }
-            const response = await window.electron.ipcRenderer.invoke("SetConversation", { ...FormstateData});
-            setFormState({
-                Date: "",
-                isArge: false,
-                isContractSigned: false,
-                isArgeBackStatus: false,
-                isSurdurulebilirlik: false,
-                isProtocolSigned: false,
-                isAcademicJoined: false,
-                AcademicName: "",
-                CompanyNames: '',
-                ContractType: '',
-                startDate: '',
-                ConversationOwner: "",
-                Sector: '',
-                endDate: "",
-            })
-            setisLoading((e) => !e)
-            setContractDate({
-                start: parseDate("2005-12-30"),
-                end: parseDate("2005-12-30")
-            })
-            if (response) {
+            const response = await window.electron.ipcRenderer.invoke("", { ...formState })
+            console.log(response);
+            if (response)
                 setisSuccess(true)
-            } else {
+            else
                 setisSuccess(false)
-            }
+
+
             setTimeout(() => {
                 setisSuccess("")
-            }, 1000);
+            }, 1500);
+
         } catch (error) {
-            console.log("error from form:", error);
-        } finally {
-            FetchSelectors();
+            console.log("error from handleSubmit: ", error);
+            setisSuccess(false)
+            setTimeout(() => {
+                setisSuccess("")
+            }, 1500);
         }
+
     }
-
-
-    const ReturnAcademics = () => {
-        let elements = [];
-        Akademiks.map((array) => {
-            array.map((e) => {
-                if (!elements.includes(e)) {
-                    elements.push(e)
-                }
-            })
-        })
-        return elements
-    }
-
-    const handleAcademic = (e) => {
-        e.target.value.length > 0 ? setFormState({ ...formState, AcademicName: e.target.value.toUpperCase(), isAcademicJoined: true }) : setFormState({ ...formState, AcademicName: e.target.value.toUpperCase(), isAcademicJoined: false })
-    }
-
 
     return (
-        <form onSubmit={handleSubmit} className='w-screen h-screen flex flex-col  justify-center items-center'>
+        <form onSubmit={handleSubmit} className='w-full h-screen flex flex-col  justify-center items-center'>
+            <h1 className={`${isSuccees !== "" ? isSuccees ? "text-green-300" : "text-red-600" : "hidden"} text-xl font-bold`}>{isSuccees ? "KAYDEDİLDİ" : "HATTA OLUŞTU"}</h1>
 
-            <ul className='flex justify-center items-start flex-col gap-5'>
-                <li>
-                    <div className='flex justify-between items-center gap-2'>
-                        {isLoading && <Spinner size='lg' label='Yükleniyor...' color='success' />}
-                        {isSuccess === "" ? "" : isSuccess ? <h1 className='text-green-300  text-2xl font-bold'>Bilgiler Kaydedildi</h1> : <h1 className='text-red-600  text-2xl font-bold'>Bilgiler Kaydedilemedi</h1>}
-                    </div>
-                </li>
+            <div className='flex  justify-center items-start flex-wrap  flex-row gap-2 border-2 border-green-400 w-3/4 h-3/4 rounded-lg'>
+                <Button variant="solid" color='success' className='mt-1' onPress={() => setisNew((e) => !e)} >{isNew ? "Yeni Veri" : "Eski veri"}</Button>
+                <div className='flex flex-row w-full justify-evenly items-center'>
 
-                <li>
-                    <div className='flex justify-between items-center gap-2'>
-                        <h1 className='text-white  text-2xl font-bold'>Firma Adı:</h1>
-                        <button type="button" onClick={() => setisNew((e) => !e)} className=' mt-2 text-white border-2 border-green-300 p-3 rounded-xl'  >{!isNew ? "Yeni Kayıt" : "Eski kayıt"}</button>
-                    </div>
-                </li>
-
-
-                <li>
-                    <div className='flex justify-between items-center gap-2'>
-                        <h1 className='text-white  text-2xl font-bold'>Firma Adı:</h1>
-                        {
-                            isNew ? <Input value={formState.CompanyNames} onchange={(e) => setFormState({ ...formState, CompanyNames: e.target.value.toUpperCase() })} type={"text"} placeholder={"Firma Adını Giriniz"} />
-                                :
-                                (
-                                    <Select placeholder='Firma Adı Seçiniz' label="Firma" variant='bordered' classNames={{ value: "text-white group-data-[has-value=true]:text-white" }} value={[formState.CompanyNames]} onChange={(e) => setFormState({ ...formState, CompanyNames: e.target.value })} color='success' className='min-w-28 outline-none  rounded-xl text-white'>
-                                        {Companies.map((e, index) => {
-                                            let elements = [];
-                                            for (let index1 = 0; index1 < index; index1++) {
-                                                elements.push(Companies[index1])
-                                            }
-
-                                            if (!elements.includes(e)) {
-                                                console.log(e);
-                                                return <SelectItem key={e}>{e}</SelectItem>
-                                            }
-                                        })}
-                                    </Select>
-                                )
+                    <div className='flex flex-col justify-start items-center w-full p-2 gap-2'>
+                        <h1 className='text-xl font-bold text-white'>Firma Bilgileri:</h1>
+                        {isNew ? (
+                            <Input
+                                label="Firma"
+                                isRequired
+                                value={formState.CompanyNames}
+                                onChange={(e) => setFormState({ ...formState, CompanyNames: e.target.value.toUpperCase() })}
+                                className="max-w-xs font-bold"
+                                placeholder={"Firma Adı"}
+                                type="text"
+                                variant="flat"
+                            />
+                        ) :
+                            (
+                                <Select
+                                    isRequired
+                                    className="max-w-xs"
+                                    value={formState.isArge}
+                                    label="Arge/Tasarım Merkezi"
+                                    placeholder="Arge/Tasarım Merkezi Seçiniz"
+                                    onChange={(e) => setFormState({ ...formState, isArge: e.target.value === "Var" ? true : false })}
+                                >
+                                    {
+                                        ["Var", "Yok"].map((e) => {
+                                            return <SelectItem key={e}>{e}</SelectItem>
+                                        })
+                                    }
+                                </Select>
+                            )
                         }
-                    </div>
-                </li>
-
-                <li>
-                    <div className='flex justify-between items-center gap-2 '>
-                        <h1 className='text-white  text-2xl font-bold'>Sektör:</h1>
-                        {
-                            isNew ? <Input value={formState.Sector} onchange={(e) => { setFormState({ ...formState, Sector: e.target.value.toUpperCase() }) }} type={"text"} placeholder={"Sektör Adını Giriniz"} />
-                                :
-                                (
-                                    <Select placeholder='Sektör Seçiniz' label="Sektör" color='success' variant='bordered' classNames={{ value: "text-white group-data-[has-value=true]:text-white" }} value={[formState.Sector]} onChange={(e) => setFormState({ ...formState, Sector: e.target.value.toUpperCase() })} className='min-w-28  bg-black text-white'>
-                                        {Sektor.map((e, index) => {
-                                            let elements = [];
-                                            for (let index1 = 0; index1 < index; index1++) {
-                                                elements.push(Sektor[index1])
-                                            }
-
-                                            if (!elements.includes(e)) {
-                                                return <SelectItem key={e}>{e}</SelectItem>
-                                            }
-                                        })}
-                                    </Select>
-                                )
-                        }
-
-                    </div>
-                </li>
-
-                <li>
-                    <div className='flex justify-between items-center gap-2 '>
-                        <h1 className='text-white  text-2xl font-bold'>Tarih:</h1>
-                        <Input value={formState.Date} onchange={(e) => { setFormState({ ...formState, Date: e.target.value.toUpperCase() }) }} type={"date"} placeholder={"tarih"} />
-                    </div>
-                </li>
-
-
-                <li>
-                    <div className='flex justify-between items-center gap-2 '>
-                        <h1 className='text-white  text-2xl font-bold'>Görüşmeyi Yapan Kişiler:</h1>
-                        <Select variant='bordered' color='success' placeholder='Görüşmeyi Yapan Kişiler' selectionMode="multiple" classNames={{ value: "text-white group-data-[has-value=true]:text-white" }} onChange={(e) => { setFormState({ ...formState, ConversationOwner: e.target.value.toUpperCase() }) }} value={[formState.ConversationOwner]} className='min-w-28'>
-                            {Users.map((e, index) => {
-                                let elements = [];
-                                for (let index1 = 0; index1 < index; index1++) {
-                                    elements.push(Users[index1])
-                                }
-
-                                if (!elements.includes(e)) {
-                                    return <SelectItem key={e.toUpperCase()} >{e.toUpperCase()}</SelectItem>
-                                }
-                            })}
+                        <Select
+                            isRequired
+                            className="max-w-xs"
+                            value={formState.isArge}
+                            label="Arge/Tasarım Merkezi"
+                            placeholder="Arge/Tasarım Merkezi Seçiniz"
+                            onChange={(e) => setFormState({ ...formState, isArge: e.target.value === "Var" ? true : false })}
+                        >
+                            {
+                                ["Var", "Yok"].map((e) => {
+                                    return <SelectItem key={e}>{e}</SelectItem>
+                                })
+                            }
                         </Select>
                     </div>
-                </li>
-
-                <li>
-                    <div className='flex justify-between items-center gap-2 '>
-                        <h1 className='text-white  text-2xl font-bold'>Akademisyen Katılımı:</h1>
-                        {
-                            isNew ? <Input onchange={handleAcademic} value={formState.AcademicName} type={"text"} placeholder={"Akademisyen Adını Giriniz"} />
-                                :
-                                (
-                                    <Select value={[formState.AcademicName]} onChange={handleAcademic} variant='bordered' color='success' placeholder='Akademisyenler' selectionMode="multiple" classNames={{ value: "text-white group-data-[has-value=true]:text-white" }} className='min-w-28 '>
-                                        {ReturnAcademics().map((e, index) => {
-                                            return <SelectItem key={e}>{e}</SelectItem>
-                                        })}
-                                    </Select>
-                                )
-                        }
-                    </div>
-                </li>
-
-                <li>
-                    <div className='flex justify-between items-center gap-2 '>
-                        <h1 className='text-white  text-2xl font-bold'>Protokol:</h1>
-                        <input onChange={(e) => { setFormState({ ...formState, isProtocolSigned: e.target.checked }) }} checked={formState.isProtocolSigned} type="checkbox" className='h-6 w-6 accent-green-300 ' />
-                    </div>
-                </li>
-
-                <li>
-                    <div className='flex justify-between items-center gap-2 '>
-                        <h1 className='text-white  text-2xl font-bold'>Sözleşme:</h1>
-                        <input onChange={(e) => { setFormState({ ...formState, isContractSigned: e.target.checked }) }} checked={formState.isContractSigned} type="checkbox" className='min-w-6 h-6 accent-green-300 ' />
-
-                        <select disabled={!formState.isContractSigned} onChange={(e) => { setFormState({ ...formState, ContractType: e.target.value.toUpperCase() }) }} value={formState.ContractType} className='min-w-28 p-2 border-2 border-white rounded-lg outline-none focus:border-2 focus:border-green-300 bg-black text-white'>
-                            <option value="">Sözleşme Türü Seçiniz</option>
-                            <option value="ÖZKAYNAK">ÖZKAYNAK</option>
-                            <option value="TÜBİTAK">TÜBİTAK</option>
-                            <option value="PROJE YAZMA">PROJE YAZMA</option>
-                            <option value="TEKNOPARK">TEKNOPARK</option>
-                        </select>
-
-                        <DateRangePicker
-                            isDisabled={!formState.isContractSigned}
+                    <div className='flex flex-col justify-start items-center w-full  p-2 gap-2'>
+                        <h1 className='text-xl font-bold text-white'>Katılımcıların Bilgileri:</h1>
+                        <Select
                             isRequired
-                            className="max-w-xs font-bold"
-                            variant="faded"
-                            label="Tarihler ay/gün/yıl olaraktır"
-                            classNames={{ segment: "font-bold" }}
-                            value={ContractDate}
-                            onChange={setContractDate}
-                        />
+                            selectionMode="multiple"
+                            className="max-w-xs"
+                            value={formState.ConversationOwners}
+                            label="Katılımcılar"
+                            placeholder="Katılımcı Seçiniz"
+                            onChange={(e) => setFormState({ ...formState, ConversationOwners: e.target.value.toUpperCase() })}
+                        >
+                            {
+                                UserNames.map((e) => {
+                                    return <SelectItem key={e}>{e}</SelectItem>
+                                })
+                            }
+                        </Select>
+                        {isNew ? (
+                            <Input
+                                label="Akademisyenler"
+                                value={formState.Academics.AcademicNames}
+                                onChange={(e) => setFormState({ ...formState, Academics: { isAcademicJoined: formState.Academics > 0 || true, AcademicNames: e.target.value.toUpperCase() } })}
+                                className="max-w-xs font-bold"
+                                placeholder={"DR. İRFAN KÖSESOY,PRO. DR. KEREM KÜÇÜK"}
+                                type="text"
+                                variant="flat"
+                            />
+                        ) :
+                            (
+                                <Select
+                                    isRequired
+                                    className="max-w-xs"
+                                    value={formState.isArge}
+                                    label="Arge/Tasarım Merkezi"
+                                    placeholder="Arge/Tasarım Merkezi Seçiniz"
+                                    onChange={(e) => setFormState({ ...formState, isArge: e.target.value === "Var" ? true : false })}
+                                >
+                                    {
+                                        ["Var", "Yok"].map((e) => {
+                                            return <SelectItem key={e}>{e}</SelectItem>
+                                        })
+                                    }
+                                </Select>
+                            )
+                        }
+                        <input type="date" value={formState.Date} onChange={(e) => setFormState({ ...formState, Date: e.target.value })} className='p-2 border-3 w-4/5  bg-white border-green-400 focus:outline-none rounded-lg font-bold' />
                     </div>
-                </li>
-
-                <div className='flex flex-row gap-2'>
-
-                    <li>
-                        <div className='flex justify-between items-center gap-2 '>
-                            <h1 className='text-white  text-2xl font-bold'>Arge Merkezi:</h1>
-                            <input onChange={(e) => { setFormState({ ...formState, isArge: e.target.checked }) }} checked={formState.isArge} type="checkbox" className='h-6 w-6 accent-green-300 ' />
-                        </div>
-                    </li>
-                    <li>
-                        <div className='flex justify-between items-center gap-2 '>
-                            <h1 className='text-white  text-2xl font-bold'>Arge Back Ofis Danışmanlığı:</h1>
-                            <input onChange={(e) => { setFormState({ ...formState, isArgeBackStatus: e.target.checked }) }} checked={formState.isArgeBackStatus} type="checkbox" className='h-6 w-6 accent-green-300 ' />
-                        </div>
-                    </li>
-
-                    <li>
-                        <div className='flex justify-between items-center gap-2 '>
-                            <h1 className='text-white  text-2xl font-bold'>Sürdürülebilirlik:</h1>
-                            <input onChange={(e) => { setFormState({ ...formState, isSurdurulebilirlik: e.target.checked }) }} checked={formState.isSurdurulebilirlik} type="checkbox" className='h-6 w-6 accent-green-300 ' />
-                        </div>
-                    </li>
 
                 </div>
 
-                <li>
-                    <button type="submit" className=' mt-2 text-white border-2 border-green-300 p-3 rounded-xl'  >Kaydet</button>
-                </li>
+                <div className='flex flex-col justify-start items-center p-2 gap-2 flex-1'>
+                    <h1 className='text-xl font-bold text-white'>Ana Bilgileri:</h1>
+                    <div className='flex flex-row justify-center items-center gap-1'>
+                        <Select
+                            isRequired
+                            className="min-w-32"
+                            value={selectorAna}
+                            label="Statu"
+                            placeholder="Statu Seçiniz"
+                            onChange={handleAna}
+                        >
+                            {
+                                ["iş Geliştirme", "Teklif", "Sözleşme", "Protokol"].map((e) => {
+                                    return <SelectItem key={e}>{e}</SelectItem>
+                                })
+                            }
+                        </Select>
+                    </div>
 
-            </ul>
 
+                    {formState.Teklif.isTeklif && (
+                        <>
+                            <label className='text-white'>Başlangıç</label>
+                            <input
+                                type="date"
+                                value={formState.Teklif.startDate}
+                                onChange={(e) =>
+                                    setFormState({
+                                        ...formState,
+                                        Teklif: { ...formState.Teklif, startDate: e.target.value }
+                                    })
+                                }
+                                className="p-2 border-3 w-4/5 bg-white border-green-400 focus:outline-none rounded-lg font-bold"
+                            />
+                            <label className='text-white'>Bitiş</label>
+                            <input
+                                type="date"
+                                value={formState.Teklif.endDate}
+                                onChange={(e) =>
+                                    setFormState({
+                                        ...formState,
+                                        Teklif: { ...formState.Teklif, endDate: e.target.value }
+                                    })
+                                }
+                                className="p-2 border-3 w-4/5 bg-white border-green-400 focus:outline-none rounded-lg font-bold"
+                            />
+                        </>
+                    )}
+
+                    {formState.Contract.isContractSigned && (
+                        <div className='flex flex-row w-full gap-1'>
+                            <div className='flex flex-col w-full justify-center items-center gap-2'>
+                                <input
+                                    type="date"
+                                    value={formState.Teklif.startDate}
+                                    onChange={(e) =>
+                                        setFormState({
+                                            ...formState,
+                                            Teklif: { ...formState.Teklif, startDate: e.target.value }
+                                        })
+                                    }
+                                    className="p-2 border-3 w-4/5 bg-white border-green-400 focus:outline-none rounded-lg font-bold"
+                                />
+                                <input
+                                    type="date"
+                                    value={formState.Teklif.endDate}
+                                    onChange={(e) =>
+                                        setFormState({
+                                            ...formState,
+                                            Teklif: { ...formState.Teklif, endDate: e.target.value }
+                                        })
+                                    }
+                                    className="p-2 border-3 w-4/5 bg-white border-green-400 focus:outline-none rounded-lg font-bold"
+                                />
+
+                            </div>
+
+                            <div className='flex flex-col w-full justify-center items-center gap-2'>
+                                <input
+                                    value={formState.Contract.Amount}
+                                    onChange={(e) => setFormState({ ...formState, Contract: { ...formState.Contract, Amount: e.target.value } })}
+                                    placeholder="0"
+                                    type="number"
+                                    className='rounded-lg p-2 w-full'
+                                />
+
+                                <Select
+                                    isRequired
+                                    className="min-w-32"
+                                    value={formState.Contract.ContractType}
+                                    label="Sözleşme Tipi"
+                                    placeholder="Sözleşme Tipi Seçiniz"
+                                    onChange={handleContractTpye}
+                                >
+                                    {
+                                        ["TÜBİTAK", "ÖZKAYNAK", "PROJE YAZMA", "TEKNOPARK", "Diğer"].map((e) => {
+                                            return <SelectItem key={e}>{e}</SelectItem>
+                                        })
+                                    }
+                                </Select>
+                                {isDiger && (
+                                    <Input
+                                        label="Diğer"
+                                        value={formState.Contract.ContractType}
+                                        onChange={(e) => setFormState({ ...formState, Contract: { ...formState.Contract, ContractType: e.target.value.toUpperCase() }})}
+                                        className="max-w-xs font-bold"
+                                        placeholder={"Diğer türler"}
+                                        type="text"
+                                        variant="flat"
+                                    />
+                                )}
+                            </div>
+
+
+                        </div>
+                    )}
+
+                    <Input
+                        label="Açıklama"
+                        value={formState.ConversationDetails}
+                        onChange={(e) => setFormState({ ...formState, ConversationDetails:e.target.value})}
+                        className="max-w-xs font-bold"
+                        type="text"
+                        variant="flat"
+                    />
+                </div>
+
+
+
+
+
+            </div>
+
+            <Button type="submit" variant='solid' className='mt-2 text-black font-bold border-2 bg-white border-green-300 p-3 rounded-xl'>Kaydet</Button>
 
         </form>
     );
 }
+
+const getAllUserN = async () => {
+    try {
+        const response = await window.electron.ipcRenderer.invoke("GetAllUserNames", "")
+        return response
+    } catch (error) {
+        console.log("getAllUserN: \n", error);
+        return []
+    }
+}
+
 
 export default Dataisertaion;

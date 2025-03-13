@@ -12,8 +12,7 @@ const AdminDataFilter = () => {
   const [sectors, setSectors] = useState(null);
   const [users, setUsers] = useState(null);
   const [companies, setCompanies] = useState(null);
-  const [dealTypes, setDealTypes] = useState(null);
-
+  const [dealTypes, setDealTypes] = useState(null)
 
   const createAkademics = () => {
     let elements = [];

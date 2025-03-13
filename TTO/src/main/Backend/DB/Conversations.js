@@ -5,48 +5,28 @@ const ConversationSchema = mongoose.Schema(
         Date:{
             type:String
         },
-        CompanyNames:{
-            type:String
+        Contract:{
+            isContractSigned:Boolean,
+            ContractType:String,
+            startDate: String,
+            endDate: String,
+            Amount:Number
         },
-        Sector:{
-            type:String
+        Teklif:{
+            isTeklif:Boolean,
+            startDate: String,
+            endDate:String,
         },
-        ConversationOwner:{
-            type:Array
+        Academics: {
+            isAcademicJoined:Boolean,
+            AcademicNames:String,
         },
-        isAcademicJoined:{
-            type:Boolean
-        },
-        AcademicName:{
-            type:Array
-        },
-        isProtocolSigned:{
-            type:Boolean
-        },
-        isContractSigned:{
-            type:Boolean
-        },
-        ContractType:{
-            type:String
-        },
-        isArge:{
-            type:Boolean
-        },
-        isArgeBackStatus:{
-            type:Boolean
-        },
-        isSurdurulebilirlik:{
-            type:Boolean
-        },
-        ACCOUNT:{
-            type:String
-        },
-        startDate:{
-            type:String
-        },
-        endDate:{
-            type:String
-        }
+        isGelistirme:Boolean,
+        isProtocolSigned:Boolean,
+        CompanyNames:String,
+        ConversationOwners:String,
+        isArge:Boolean,
+        ConversationDetails:String
     }
 )
 

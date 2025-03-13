@@ -13,7 +13,7 @@ import AdminDashboard from "./components/AdminDashboard"
 function App() {
   const ipcHandle = () => window.electron.ipcRenderer.send('ping')
 
-  const [Show, setShow] = useState(true);
+  const [Show, setShow] = useState(false);
   return (
     <div className="bg-black h-screen w-screen flex mx-auto">
 
