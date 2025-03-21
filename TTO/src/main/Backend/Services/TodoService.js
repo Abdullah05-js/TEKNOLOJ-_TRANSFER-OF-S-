@@ -39,7 +39,7 @@ export const GetUserTodos = async () => {
         const todos = await Todo.find()
             .sort({ createdAt: -1 })
             .populate('userId', 'UserName'); // userId users ları referans etti için 
-    console.log(todos);
+            
         return todos.map(cleanTodoForIPC)
     } catch (error) {
         console.error('Error fetching todos:', error);

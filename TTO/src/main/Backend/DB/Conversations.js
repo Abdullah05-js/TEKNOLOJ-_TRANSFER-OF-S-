@@ -10,7 +10,10 @@ const ConversationSchema = mongoose.Schema(
             ContractType:String,
             startDate: String,
             endDate: String,
-            Amount:Number
+            Amount:{
+                type:Number,
+                default:0
+            }
         },
         Teklif:{
             isTeklif:Boolean,

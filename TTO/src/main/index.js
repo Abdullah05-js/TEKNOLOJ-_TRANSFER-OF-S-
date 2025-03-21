@@ -4,7 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import connectDB from './Backend/DB/ConnectDB'
 import { AuthUser, CreateAcccount , DeleteUser , GetUsers , UpdatePassword, GetAllUserNames} from './Backend/Services/UsersService.js'
-import { SearchConversations, SetConversation, GetSelectors, GetConversations , SetOneConversation , GetOneConversation} from "./Backend/Services/ConversationsService.js"
+import { SearchConversations, SetConversation, GetSelectors, GetConversations , SetOneConversation , GetOneConversation, getAllComponeyNamesAndAcademics} from "./Backend/Services/ConversationsService.js"
 import { CreateTodo, GetUserTodos, UpdateTodoStatus, DeleteTodo, getTodoForDate ,deleteAll } from "./Backend/Services/TodoService.js"
 import path from 'path'
 import fs from 'fs'
@@ -102,7 +102,7 @@ app.whenReady().then(async () => {
   })
 
   ipcMain.handle("SetOneConversation", async(event,req) => {
-    return await SetOneConversation(req.data,req.id)
+    return await SetOneConversation(req)
   })
 
   ipcMain.handle("GetOneConversation", async(event,userId) => {
@@ -114,6 +114,10 @@ app.whenReady().then(async () => {
 
   ipcMain.handle("DeleteUser",async(event,data) => {
     return await DeleteUser(data)
+  })
+
+  ipcMain.handle("getAllComponeyNamesAndAcademics",async(event,data) => {
+    return await getAllComponeyNamesAndAcademics()
   })
 
   ipcMain.handle("GetAllUser",async(event,data) => {
@@ -146,9 +150,8 @@ app.whenReady().then(async () => {
     return ReturnList;
   })
 
-  ipcMain.handle("getPaginition",async (event,data) => {
-    const allConVersations = await GetConversations();
-    return Math.ceil(allConVersations.length/10) === 0 ? 1 : Math.ceil(allConVersations.length/10)
+  ipcMain.handle("getPaginition",async (event,length) => {
+    return Math.ceil(length/15) === 0 ? 1 : Math.ceil(length/15)
   })
 
   ipcMain.handle("GetFilter", async (event, data) => {
@@ -184,7 +187,6 @@ app.whenReady().then(async () => {
       isProtocolSigned: true
     })
 
-    console.log(data);
 
     const totalGorevlendirme = await getTodoForDate(data.year, data.month);
 
@@ -207,7 +209,6 @@ app.whenReady().then(async () => {
   })
 
   ipcMain.handle("GetUserTodos", async (event, userId) => {
-    console.log('Fetching todos for user:', userId);
     return await GetUserTodos();
    //return await deleteAll()
   })

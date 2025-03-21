@@ -1,6 +1,7 @@
 import Conversations from "../DB/Conversations";
 import Users from "../DB/Users";
 import { GetUsers } from "./UsersService";
+import Filter from "../DB/Filter.js"
 export const GetConversations = async () => {
    try {
       return await Conversations.find().lean();
@@ -10,55 +11,145 @@ export const GetConversations = async () => {
    }
 }
 
-
-
 export const SearchConversations = async (query) => {
    try {
       const page = query.page;
       delete query.page
-      const List =  await Conversations.find(query)
-      const end  = page*10;
-      const start = end-10;
-      return JSON.stringify(List.splice(start,end)) // i did this becouse i got som error the _id was coming as a buffer
+      let List = await Conversations.find()
+      Object.keys(query).forEach((e) => {
+         if (e === "Date") {
+            List = List.filter((a) => a.Date === a[e])
+         } else if (e === "Contract") {
+            List = List.filter((a) => a.Contract.isContractSigned)
+            if (query[e].ContractType) {
+               List = List.filter((a) => a.Contract.ContractType === query[e].ContractType)
+            }
+
+            if (query[e].startDate && query[e].endDate) {
+               List = List.filter((a) => (new Date(a.Contract.startDate)).getTime() >= (new Date(query[e].startDate)).getTime() && (new Date(a.Contract.endDate)).getTime() <= (new Date(query[e].endDate)).getTime())
+            }
+            else if (query[e].startDate) {
+               List = List.filter((a) => (new Date(a.Contract.startDate)).getTime() >= (new Date(query[e].startDate)).getTime())
+            }
+            else if (query[e].endDate) {
+               List = List.filter((a) => (new Date(a.Contract.endDate)).getTime() <= (new Date(query[e].endDate)).getTime())
+            }
+
+            if (query[e].Amount !== 0) {
+               List = List.filter((a) => a.Contract.Amount === query[e].Amount)
+            }
+         } else if (e === "Teklif") {
+            List = List.filter((a) => a.Teklif.isTeklif)
+            if (query[e].startDate && query[e].endDate) {
+               List = List.filter((a) => (new Date(a.Teklif.startDate)).getTime() >= (new Date(query[e].startDate)).getTime() && (new Date(a.Teklif.endDate)).getTime() <= (new Date(query[e].endDate)).getTime())
+            }
+            else if (query[e].startDate) {
+               List = List.filter((a) => (new Date(a.Teklif.startDate)).getTime() >= (new Date(query[e].startDate)).getTime())
+            }
+            else if (query[e].endDate) {
+               List = List.filter((a) => (new Date(a.Teklif.endDate)).getTime() <= (new Date(query[e].endDate)).getTime())
+            }
+         }
+         else if (e === "Academics") {
+            List = List.filter((a) => a.Academics.isAcademicJoined)
+            if (query[e].AcademicNames) {
+               List = List.filter((a) => a.Academics.AcademicNames.includes(query[e].AcademicNames))
+            }
+         } else if (e === "isGelistirme" || e === "isProtocolSigned" || e === "isArge") {
+            List = List.filter((a) => a[e])
+         }
+         else if (e === "CompanyNames") {
+            List = List.filter((a) => a.CompanyNames === query[e])
+         }
+         else if (e === "ConversationOwners") {
+            // in the conversation there may 2 or more people join so we need to filter like this for better output because they may want see the 2 Owners in the same time 
+           const ConversationOwnersList = query[e].split(",")
+
+            ConversationOwnersList.forEach(element => {
+               List = List.filter((a) => a.ConversationOwners.includes(element))
+            });
+         }
+      })
+
+      const end = page * 15;
+      const start = end - 15;
+      return JSON.stringify({List:List.splice(start, end),TotalPages:List.length}) // i did this becouse i got som error the _id was coming as a buffer
    } catch (error) {
       console.log("error from SearchConversations: ", error);
       return []
    }
 }
 
-export const SetOneConversation = async (data,id) => {
-try {
-   await Conversations.findOneAndUpdate({
-      _id:id
-   },data)
-   return true
-} catch (error) {
-   console.log("error from SetOneConversation: ",error)
-   return false
-}
+export const SetOneConversation = async (data, id) => {
+   try {
+      await Conversations.findOneAndUpdate({
+         _id: id
+      }, data)
+      return true
+   } catch (error) {
+      console.log("error from SetOneConversation: ", error)
+      return false
+   }
 }
 
 export const GetOneConversation = async (id) => {
    try {
-      const response = await Conversations.findOne({_id:id})
-      if(response)
+      const response = await Conversations.findOne({ _id: id })
+      if (response)
          return JSON.stringify(response);
       else
          return false
    } catch (error) {
-      console.log("error from GetOneConversation: ",error)
-      return  false  
+      console.log("error from GetOneConversation: ", error)
+      return false
    }
-} 
+}
 
 export const SetConversation = async (data) => {
    try {
+      console.log(data);
       const newConversation = new Conversations(data)
       await newConversation.save()
+      const newData = newConversation.Academics.AcademicNames.split(",")
+      const filter = await Filter.find({})
+      for (const e of newData) {
+         if (!filter[0].AcademicNames.includes(e)) {
+            await Filter.findOneAndUpdate({ _id: filter[0]._id }, {
+               $push: {
+                  AcademicNames: e
+               }
+            })
+         }
+      }
+      if (!filter[0].CompanyNames.includes(newConversation.CompanyNames)) {
+         await Filter.findOneAndUpdate({ _id: filter[0]._id }, {
+            $push: {
+               CompanyNames: newConversation.CompanyNames
+            }
+         })
+      }
       return true
    } catch (error) {
       console.log("error from SetConversation: ", error);
       return false
+   }
+}
+
+
+export const getAllComponeyNamesAndAcademics = async () => {
+   try {
+      const filter = (await Filter.find({}))[0]
+      console.log(filter);
+      return JSON.stringify({
+         CompanyNames: filter.AcademicNames,
+         Academics: filter.CompanyNames
+      })
+   } catch (error) {
+      console.log("error from getAllComponeyNamesAndAcademics: ", error);
+      return {
+         CompanyNames: [],
+         Academics: []
+      }
    }
 }
 

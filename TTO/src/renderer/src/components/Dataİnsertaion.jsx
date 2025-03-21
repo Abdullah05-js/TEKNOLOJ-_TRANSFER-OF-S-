@@ -33,21 +33,40 @@ const Dataisertaion = () => {
         isArge: false,
         ConversationDetails: ""
     });
-    const [ContractDate, setContractDate] = useState({
-        start: parseDate("2005-12-30"),
-        end: parseDate("2005-12-30")
-    })
+    const [isTUBİTAK, setTUBİTAK] = useState(false)
     const [isDiger, setisDiger] = useState(false)
     const [isNew, setisNew] = useState(false)
     const [isSuccees, setisSuccess] = useState("")
     const [selectorAna, setselectorAna] = useState("")
-    const [UserNames, setUserNames] = useState(["123", "abdullah", "ahemt"])
-    const [AmountTR, setAmountTR] = useState(0)
+    const [UserNames, setUserNames] = useState([])
+    const [SelectorsData, setSelectorsData] = useState({
+        CompanyNames: [],
+        Academics: []
+    })
+
+    const getAllUserN = async () => {
+        try {
+            const response = await window.electron.ipcRenderer.invoke("GetAllUserNames", "")
+            setUserNames(response)
+        } catch (error) {
+            console.log("getAllUserN: \n", error);
+            setUserNames([])
+        }
+    }
+
+    const getAllComponeyNamesAndAcademics = async () => {
+        try {
+            const response = await window.electron.ipcRenderer.invoke("getAllComponeyNamesAndAcademics", "")
+            setSelectorsData(JSON.parse(response))
+        } catch (error) {
+            console.log("error from getAllComponeyNamesAndAcademics");
+        }
+    }
 
     useEffect(() => {
         try {
-            //setUserNames(getAllUserN())
-
+            getAllUserN()
+            getAllComponeyNamesAndAcademics()
         } catch (error) {
             console.log("use effect 1: ", error);
         }
@@ -161,20 +180,25 @@ const Dataisertaion = () => {
     }
 
     const handleContractTpye = (e) => {
-
-        if (e.target.value !== "Diğer") {
-            setFormState({ ...formState, Contract: { ...formState.Contract, ContractType: e.target.value.toUpperCase() } })
-            setisDiger(false)
+        setisDiger(false)
+        setTUBİTAK(false)
+        if (e.target.value === "Diğer") {
+            setFormState({ ...formState, Contract: { ...formState.Contract, ContractType: "" } })
+            setisDiger(true)
+            return;
+        } else if (e.target.value === "TÜBİTAK") {
+            setFormState({ ...formState, Contract: { ...formState.Contract, ContractType: e.target.value.toUpperCase() + "," } })
+            setTUBİTAK(true)
             return;
         }
-        setFormState({ ...formState, Contract: { ...formState.Contract, ContractType:""} })
-        setisDiger(true)
+        setFormState({ ...formState, Contract: { ...formState.Contract, ContractType: e.target.value.toUpperCase() } })
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        console.log(formState);
         try {
-            const response = await window.electron.ipcRenderer.invoke("", { ...formState })
+            const response = await window.electron.ipcRenderer.invoke("SetConversation", { ...formState })
             console.log(response);
             if (response)
                 setisSuccess(true)
@@ -195,6 +219,7 @@ const Dataisertaion = () => {
         }
 
     }
+    console.log(formState);
 
     return (
         <form onSubmit={handleSubmit} className='w-full h-screen flex flex-col  justify-center items-center'>
@@ -202,9 +227,9 @@ const Dataisertaion = () => {
 
             <div className='flex  justify-center items-start flex-wrap  flex-row gap-2 border-2 border-green-400 w-3/4 h-3/4 rounded-lg'>
                 <Button variant="solid" color='success' className='mt-1' onPress={() => setisNew((e) => !e)} >{isNew ? "Yeni Veri" : "Eski veri"}</Button>
-                <div className='flex flex-row w-full justify-evenly items-center'>
+                <div className='flex flex-row w-full items-center'>
 
-                    <div className='flex flex-col justify-start items-center w-full p-2 gap-2'>
+                    <div className='flex flex-col justify-start items-stretch w-full p-2 gap-2'>
                         <h1 className='text-xl font-bold text-white'>Firma Bilgileri:</h1>
                         {isNew ? (
                             <Input
@@ -222,13 +247,13 @@ const Dataisertaion = () => {
                                 <Select
                                     isRequired
                                     className="max-w-xs"
-                                    value={formState.isArge}
-                                    label="Arge/Tasarım Merkezi"
-                                    placeholder="Arge/Tasarım Merkezi Seçiniz"
-                                    onChange={(e) => setFormState({ ...formState, isArge: e.target.value === "Var" ? true : false })}
+                                    value={formState.CompanyNames}
+                                    label="Firma"
+                                    placeholder="Firma Adı Seçiniz"
+                                    onChange={(e) => setFormState({ ...formState, CompanyNames: e.target.value })}
                                 >
                                     {
-                                        ["Var", "Yok"].map((e) => {
+                                        SelectorsData.CompanyNames.map((e) => {
                                             return <SelectItem key={e}>{e}</SelectItem>
                                         })
                                     }
@@ -250,7 +275,7 @@ const Dataisertaion = () => {
                             }
                         </Select>
                     </div>
-                    <div className='flex flex-col justify-start items-center w-full  p-2 gap-2'>
+                    <div className='flex flex-col justify-start items-stretch w-full  p-2 gap-2 '>
                         <h1 className='text-xl font-bold text-white'>Katılımcıların Bilgileri:</h1>
                         <Select
                             isRequired
@@ -271,7 +296,7 @@ const Dataisertaion = () => {
                             <Input
                                 label="Akademisyenler"
                                 value={formState.Academics.AcademicNames}
-                                onChange={(e) => setFormState({ ...formState, Academics: { isAcademicJoined: formState.Academics > 0 || true, AcademicNames: e.target.value.toUpperCase() } })}
+                                onChange={(e) => setFormState({ ...formState, Academics: { isAcademicJoined: e.target.value.toUpperCase().length > 0 ? true : false, AcademicNames: e.target.value.toUpperCase() } })}
                                 className="max-w-xs font-bold"
                                 placeholder={"DR. İRFAN KÖSESOY,PRO. DR. KEREM KÜÇÜK"}
                                 type="text"
@@ -280,15 +305,15 @@ const Dataisertaion = () => {
                         ) :
                             (
                                 <Select
-                                    isRequired
+                                    selectionMode="multiple"
                                     className="max-w-xs"
-                                    value={formState.isArge}
-                                    label="Arge/Tasarım Merkezi"
-                                    placeholder="Arge/Tasarım Merkezi Seçiniz"
-                                    onChange={(e) => setFormState({ ...formState, isArge: e.target.value === "Var" ? true : false })}
+                                    value={formState.Academics.AcademicNames}
+                                    label="Akademisyenler"
+                                    placeholder="Akademisyen Seçiniz"
+                                    onChange={(e) => setFormState({ ...formState, Academics: { isAcademicJoined: e.target.value.toUpperCase().length > 0 ? true : false, AcademicNames: e.target.value.toUpperCase() } })}
                                 >
                                     {
-                                        ["Var", "Yok"].map((e) => {
+                                        SelectorsData.Academics.map((e) => {
                                             return <SelectItem key={e}>{e}</SelectItem>
                                         })
                                     }
@@ -318,7 +343,6 @@ const Dataisertaion = () => {
                             }
                         </Select>
                     </div>
-
 
                     {formState.Teklif.isTeklif && (
                         <>
@@ -354,29 +378,27 @@ const Dataisertaion = () => {
                             <div className='flex flex-col w-full justify-center items-center gap-2'>
                                 <input
                                     type="date"
-                                    value={formState.Teklif.startDate}
+                                    value={formState.Contract.startDate}
                                     onChange={(e) =>
                                         setFormState({
                                             ...formState,
-                                            Teklif: { ...formState.Teklif, startDate: e.target.value }
+                                            Contract: { ...formState.Contract, startDate: e.target.value }
                                         })
                                     }
                                     className="p-2 border-3 w-4/5 bg-white border-green-400 focus:outline-none rounded-lg font-bold"
                                 />
                                 <input
                                     type="date"
-                                    value={formState.Teklif.endDate}
+                                    value={formState.Contract.endDate}
                                     onChange={(e) =>
                                         setFormState({
                                             ...formState,
-                                            Teklif: { ...formState.Teklif, endDate: e.target.value }
+                                            Contract: { ...formState.Contract, endDate: e.target.value }
                                         })
                                     }
                                     className="p-2 border-3 w-4/5 bg-white border-green-400 focus:outline-none rounded-lg font-bold"
                                 />
-
                             </div>
-
                             <div className='flex flex-col w-full justify-center items-center gap-2'>
                                 <input
                                     value={formState.Contract.Amount}
@@ -385,7 +407,6 @@ const Dataisertaion = () => {
                                     type="number"
                                     className='rounded-lg p-2 w-full'
                                 />
-
                                 <Select
                                     isRequired
                                     className="min-w-32"
@@ -404,50 +425,41 @@ const Dataisertaion = () => {
                                     <Input
                                         label="Diğer"
                                         value={formState.Contract.ContractType}
-                                        onChange={(e) => setFormState({ ...formState, Contract: { ...formState.Contract, ContractType: e.target.value.toUpperCase() }})}
+                                        onChange={(e) => setFormState({ ...formState, Contract: { ...formState.Contract, ContractType: e.target.value.toUpperCase() } })}
                                         className="max-w-xs font-bold"
                                         placeholder={"Diğer türler"}
                                         type="text"
                                         variant="flat"
                                     />
                                 )}
+                                {isTUBİTAK && (
+                                    <Input
+                                        label="KOD"
+                                        value={formState.Contract.ContractType}
+                                        onChange={(e) => setFormState({ ...formState, Contract: { ...formState.Contract, ContractType: e.target.value.toUpperCase() } })}
+                                        className="max-w-xs font-bold"
+                                        placeholder={"TÜBİTAK Kodu"}
+                                        type="text"
+                                        variant="flat"
+                                    />
+                                )}
                             </div>
-
-
                         </div>
                     )}
-
                     <Input
                         label="Açıklama"
                         value={formState.ConversationDetails}
-                        onChange={(e) => setFormState({ ...formState, ConversationDetails:e.target.value})}
+                        onChange={(e) => setFormState({ ...formState, ConversationDetails: e.target.value })}
                         className="max-w-xs font-bold"
                         type="text"
                         variant="flat"
                     />
                 </div>
-
-
-
-
-
             </div>
-
             <Button type="submit" variant='solid' className='mt-2 text-black font-bold border-2 bg-white border-green-300 p-3 rounded-xl'>Kaydet</Button>
 
         </form>
     );
 }
-
-const getAllUserN = async () => {
-    try {
-        const response = await window.electron.ipcRenderer.invoke("GetAllUserNames", "")
-        return response
-    } catch (error) {
-        console.log("getAllUserN: \n", error);
-        return []
-    }
-}
-
 
 export default Dataisertaion;
