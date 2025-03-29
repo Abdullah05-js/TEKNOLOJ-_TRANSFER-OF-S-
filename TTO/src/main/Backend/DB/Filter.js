@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const FilterSchema = mongoose.Schema({
     AcademicNames:Array,
     CompanyNames:Array,
+    ContractType:Array
 })
 
 

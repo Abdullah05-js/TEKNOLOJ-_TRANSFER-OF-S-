@@ -4,7 +4,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import tr from 'date-fns/locale/tr'; // Turkish locale
 import { format } from 'date-fns';
 import { useEffect } from 'react';
-import { pdf, Document, Page, Text, StyleSheet,Image} from '@react-pdf/renderer';
 import logo from "../assets/logo-beyaz.png"
 
 // Register Turkish locale
@@ -12,34 +11,6 @@ registerLocale('tr', tr);
 
 //todo burdaki tüm tarih girişlerin düzeltilmesi
 
-
-const styles = StyleSheet.create({
-    page: {
-        flexDirection: 'column',
-        padding: 20,
-    },
-    title: {
-        fontSize: 20,
-        marginBottom: 10,
-        marginTop:10,
-        textAlign: 'center',
-    },
-    content: {
-        fontSize: 14,
-        marginTop:10,
-        lineHeight: 1.5,
-        margin:5,
-        textAlign:"center",
-        textOverflow:"warp"
-    },
-    img:{
-        backgroundColor:"black",
-        justifyContent:"center",
-        alignItems:"center",
-        borderRadius:10,
-        padding:4
-    }
-});
 
 //pdf
 
@@ -121,12 +92,6 @@ const Stats = () => {
     };
 
 
-    const handlePdf = async () => {
-        const blob = await pdf(<MyDocument />).toBlob();
-        const arrayBuffer = await blob.arrayBuffer();
-        const status = await window.electron.ipcRenderer.invoke("PDF", { arrayBuffer, name: selectedAkademisyen });
-        status ? alert("pdf oluşturuldu") : alert("Hatta oluştu");
-    }
 
     // Custom styles for the date picker
     const CustomInput = React.forwardRef(({ value, onClick }, ref) => (

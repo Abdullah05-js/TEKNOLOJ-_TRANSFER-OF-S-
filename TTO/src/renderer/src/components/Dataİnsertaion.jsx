@@ -6,6 +6,7 @@ import { EthiopicAmeteAlemCalendar, parseDate } from "@internationalized/date";
 import { Spinner } from '@heroui/react';
 import { Button } from '@heroui/button';
 import { NumberInput } from '@heroui/react';
+
 const Dataisertaion = () => {
 
     const [formState, setFormState] = useState({
@@ -41,8 +42,10 @@ const Dataisertaion = () => {
     const [UserNames, setUserNames] = useState([])
     const [SelectorsData, setSelectorsData] = useState({
         CompanyNames: [],
-        Academics: []
+        Academics: [],
+        ContractType: []
     })
+    const [isSelectrosLoading, setisSelectrosLoading] = useState(true)
 
     const getAllUserN = async () => {
         try {
@@ -56,8 +59,10 @@ const Dataisertaion = () => {
 
     const getAllComponeyNamesAndAcademics = async () => {
         try {
+            setisSelectrosLoading(true)
             const response = await window.electron.ipcRenderer.invoke("getAllComponeyNamesAndAcademics", "")
             setSelectorsData(JSON.parse(response))
+            setisSelectrosLoading(false)
         } catch (error) {
             console.log("error from getAllComponeyNamesAndAcademics");
         }
@@ -236,14 +241,14 @@ const Dataisertaion = () => {
                                 label="Firma"
                                 isRequired
                                 value={formState.CompanyNames}
-                                onChange={(e) => setFormState({ ...formState, CompanyNames: e.target.value.toUpperCase() })}
+                                onChange={(e) => setFormState({ ...formState, CompanyNames: e.target.value.toUpperCase().trim() })}
                                 className="max-w-xs font-bold"
                                 placeholder={"Firma Adı"}
                                 type="text"
                                 variant="flat"
                             />
                         ) :
-                            (
+                            isSelectrosLoading ? <Spinner color='warning' size='lg' /> : (
                                 <Select
                                     isRequired
                                     className="max-w-xs"
@@ -277,21 +282,21 @@ const Dataisertaion = () => {
                     </div>
                     <div className='flex flex-col justify-start items-stretch w-full  p-2 gap-2 '>
                         <h1 className='text-xl font-bold text-white'>Katılımcıların Bilgileri:</h1>
-                        <Select
+                        {isSelectrosLoading ? <Spinner color='warning' size='lg' /> : (<Select
                             isRequired
                             selectionMode="multiple"
                             className="max-w-xs"
                             value={formState.ConversationOwners}
                             label="Katılımcılar"
                             placeholder="Katılımcı Seçiniz"
-                            onChange={(e) => setFormState({ ...formState, ConversationOwners: e.target.value.toUpperCase() })}
+                            onChange={(e) => setFormState({ ...formState, ConversationOwners: e.target.value })}
                         >
                             {
                                 UserNames.map((e) => {
                                     return <SelectItem key={e}>{e}</SelectItem>
                                 })
                             }
-                        </Select>
+                        </Select>)}
                         {isNew ? (
                             <Input
                                 label="Akademisyenler"
@@ -303,7 +308,7 @@ const Dataisertaion = () => {
                                 variant="flat"
                             />
                         ) :
-                            (
+                            isSelectrosLoading ? <Spinner color='warning' size='lg' /> : (
                                 <Select
                                     selectionMode="multiple"
                                     className="max-w-xs"
@@ -402,7 +407,7 @@ const Dataisertaion = () => {
                             <div className='flex flex-col w-full justify-center items-center gap-2'>
                                 <input
                                     value={formState.Contract.Amount}
-                                    onChange={(e) => setFormState({ ...formState, Contract: { ...formState.Contract, Amount: e.target.value } })}
+                                    onChange={(e) => setFormState({ ...formState, Contract: { ...formState.Contract, Amount: e.target.value.trim() } })}
                                     placeholder="0"
                                     type="number"
                                     className='rounded-lg p-2 w-full'
@@ -436,7 +441,7 @@ const Dataisertaion = () => {
                                     <Input
                                         label="KOD"
                                         value={formState.Contract.ContractType}
-                                        onChange={(e) => setFormState({ ...formState, Contract: { ...formState.Contract, ContractType: e.target.value.toUpperCase() } })}
+                                        onChange={(e) => setFormState({ ...formState, Contract: { ...formState.Contract, ContractType: e.target.value.toUpperCase().trim() } })}
                                         className="max-w-xs font-bold"
                                         placeholder={"TÜBİTAK Kodu"}
                                         type="text"

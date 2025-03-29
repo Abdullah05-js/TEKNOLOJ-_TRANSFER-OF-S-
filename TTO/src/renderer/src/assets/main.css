@@ -33,6 +33,11 @@
     color: black;
   }
 
+  tr:nth-child(odd){
+    background-color: #000000;
+    color: rgb(255, 255, 255);
+  }
+
   tr{
     padding: 8px;
     text-align: center;
@@ -49,7 +54,7 @@
   }
 
   td{
-    border: 2px solid rgb(0, 255, 119);
+    border: 1px solid rgb(0, 255, 119);
   }
 
 
@@ -69,4 +74,30 @@
     table-layout: fixed;
   }
 
+  
+  @layer base { img { display: initial; } } /* for the pdf text centering */
 
+
+  @media print {
+    table {
+        page-break-inside: auto;
+    }
+    
+    tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+    
+    thead {
+        display: table-header-group;
+    }
+    
+    tfoot {
+        display: table-footer-group;
+    }
+}
+
+html, body {
+  height: auto !important;
+  overflow: visible !important;
+}

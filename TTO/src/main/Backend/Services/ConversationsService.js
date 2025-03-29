@@ -16,13 +16,17 @@ export const SearchConversations = async (query) => {
       const page = query.page;
       delete query.page
       let List = await Conversations.find()
+
       Object.keys(query).forEach((e) => {
          if (e === "Date") {
-            List = List.filter((a) => a.Date === a[e])
+            List = List.filter((a) => a.Date === query[e])
          } else if (e === "Contract") {
-            List = List.filter((a) => a.Contract.isContractSigned)
+            List = List.filter((a) => a.Contract.isContractSigned === query[e].isContractSigned)
+             
             if (query[e].ContractType) {
-               List = List.filter((a) => a.Contract.ContractType === query[e].ContractType)
+               List = List.filter((a) =>{
+                  return  a.Contract.ContractType.includes(query.Contract.ContractType)
+               })
             }
 
             if (query[e].startDate && query[e].endDate) {
@@ -35,11 +39,11 @@ export const SearchConversations = async (query) => {
                List = List.filter((a) => (new Date(a.Contract.endDate)).getTime() <= (new Date(query[e].endDate)).getTime())
             }
 
-            if (query[e].Amount !== 0) {
+            if (query[e].Amount) {
                List = List.filter((a) => a.Contract.Amount === query[e].Amount)
             }
          } else if (e === "Teklif") {
-            List = List.filter((a) => a.Teklif.isTeklif)
+            List = List.filter((a) => a.Teklif.isTeklif === query[e].isTeklif)
             if (query[e].startDate && query[e].endDate) {
                List = List.filter((a) => (new Date(a.Teklif.startDate)).getTime() >= (new Date(query[e].startDate)).getTime() && (new Date(a.Teklif.endDate)).getTime() <= (new Date(query[e].endDate)).getTime())
             }
@@ -53,6 +57,7 @@ export const SearchConversations = async (query) => {
          else if (e === "Academics") {
             List = List.filter((a) => a.Academics.isAcademicJoined)
             if (query[e].AcademicNames) {
+               console.log("am in 32 ");
                List = List.filter((a) => a.Academics.AcademicNames.includes(query[e].AcademicNames))
             }
          } else if (e === "isGelistirme" || e === "isProtocolSigned" || e === "isArge") {
@@ -63,9 +68,9 @@ export const SearchConversations = async (query) => {
          }
          else if (e === "ConversationOwners") {
             // in the conversation there may 2 or more people join so we need to filter like this for better output because they may want see the 2 Owners in the same time 
-           const ConversationOwnersList = query[e].split(",")
-
-            ConversationOwnersList.forEach(element => {
+            const ConversationOwnersList = query[e].split(",")
+            console.log(ConversationOwnersList);
+            ConversationOwnersList.forEach((element) => {
                List = List.filter((a) => a.ConversationOwners.includes(element))
             });
          }
@@ -73,7 +78,7 @@ export const SearchConversations = async (query) => {
 
       const end = page * 15;
       const start = end - 15;
-      return JSON.stringify({List:List.splice(start, end),TotalPages:List.length}) // i did this becouse i got som error the _id was coming as a buffer
+      return JSON.stringify({ List: [...List].splice(start, end), TotalPages: Math.ceil(List.length / 15) === 0 ? 1 : Math.ceil(List.length / 15) , AllList:[...List]}) // i did this becouse i got som error the _id was coming as a buffer
    } catch (error) {
       console.log("error from SearchConversations: ", error);
       return []
@@ -128,6 +133,13 @@ export const SetConversation = async (data) => {
             }
          })
       }
+      if (newConversation.Contract.isContractSigned && !filter[0].ContractType.includes(newConversation.Contract.ContractType)) {
+         await Filter.findOneAndUpdate({ _id: filter[0]._id }, {
+            $push: {
+               ContractType: newConversation.Contract.ContractType
+            }
+         })
+      }
       return true
    } catch (error) {
       console.log("error from SetConversation: ", error);
@@ -141,15 +153,17 @@ export const getAllComponeyNamesAndAcademics = async () => {
       const filter = (await Filter.find({}))[0]
       console.log(filter);
       return JSON.stringify({
-         CompanyNames: filter.AcademicNames,
-         Academics: filter.CompanyNames
+         CompanyNames: filter.CompanyNames,
+         Academics: filter.AcademicNames,
+         ContractType: filter.ContractType
       })
    } catch (error) {
       console.log("error from getAllComponeyNamesAndAcademics: ", error);
-      return {
+      return JSON.stringify({
          CompanyNames: [],
-         Academics: []
-      }
+         Academics: [],
+         ContractType: []
+      })
    }
 }
 
