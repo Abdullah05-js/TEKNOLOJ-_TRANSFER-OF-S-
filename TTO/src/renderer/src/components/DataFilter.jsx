@@ -65,7 +65,6 @@ const DataFilter = () => {
         ContractType: [],
     })
     const [Users, setUsers] = useState([])
-    const [isPdf, setisPdf] = useState(false)
 
     useEffect(() => {
 
@@ -460,9 +459,98 @@ const DataFilter = () => {
                 e.target.value ? newFilter[target] = { isContractSigned: true, ContractType: e.target.value } : delete newFilter[target];
             }
         }
-        console.log(newData, newFilter);
+
+        if (target === "Teklif") {
+            newData.Contract = {
+                isContractSigned: false,
+                ContractType: "",
+                startDate: "",
+                endDate: "",
+                Amount: 0
+            }
+            delete newFilter["Contract"]
+        } else if (target === "Contract") {
+            newData.Teklif = {
+                isTeklif: false,
+                startDate: "",
+                endDate: ""
+            }
+            delete newFilter["Teklif"]
+        } 
+
+
         setFormState(newData)
         setFilter(newFilter)
+    }
+
+
+    const handleStartEndDate = (e) => {
+        const newData = { ...FormState }
+        const newFilter = { ...Filter }
+        const name = e.target.name
+        if (FormState.Teklif.isTeklif) {
+            newData.Teklif[name] = e.target.value
+            newFilter.Teklif[name] = e.target.value
+            newData.Contract = {
+                isContractSigned: false,
+                ContractType: "",
+                startDate: "",
+                endDate: "",
+                Amount: 0
+            }
+            delete newFilter["Contract"]
+        } else {
+            newData.Contract[name] = e.target.value
+
+            if(e.target.value)
+            {
+                if(newData.Contract.isContractSigned)
+                    {
+                        newFilter.Contract[name] = e.target.value
+                    }
+                    else{
+                        newFilter["Contract"] = {isContractSigned:true}
+                        newFilter["Contract"][name] = e.target.value
+                    }
+            }
+            else
+            {
+                delete newFilter["Contract"]
+            }
+            newData.Teklif = {
+                isTeklif: false,
+                startDate: "",
+                endDate: ""
+            }
+            delete newFilter["Teklif"]
+        }
+        setFormState(newData)
+        setFilter(newFilter)
+    }
+
+    const handleAmount = (e) => {
+        const newData = { ...FormState }
+        const newFilter = { ...Filter }
+        const name = e.target.name
+        const value = Number(e.target.value)
+        newData.Contract[name] = e.target.value
+        if(value)
+            {
+                if(newData.Contract.isContractSigned)
+                    {
+                        newFilter.Contract[name] = value
+                    }
+                    else{
+                        newFilter["Contract"] = {isContractSigned:true}
+                        newFilter["Contract"][name] = value
+                    }
+            }
+            else
+            {
+                delete newFilter["Contract"].Amount
+            }
+            setFormState(newData)
+            setFilter(newFilter)
     }
 
 
@@ -595,6 +683,10 @@ const DataFilter = () => {
                         </select>
                     </div>
 
+                    <div className='flex flex-row justify-center items-center'>
+                        <Input type={"date"} name="startDate" value={FormState.Teklif.isTeklif ? FormState.Teklif.startDate : FormState.Contract.startDate} onchange={handleStartEndDate} />
+                        <Input type={"date"} name="endDate" value={FormState.Teklif.isTeklif ? FormState.Teklif.endDate : FormState.Contract.endDate} onchange={handleStartEndDate} />
+                    </div>
 
                 </div>
 
@@ -620,6 +712,10 @@ const DataFilter = () => {
                     <div className='flex justify-between items-center gap-2 '>
                         <h1 className='text-white   font-bold'>Teklif:</h1>
                         <input type="checkbox" name='Teklif' checked={FormState.Teklif.isTeklif} onChange={handleFilter} className='h-6 w-6 accent-green-300 ' />
+                    </div>
+                           
+                    <div>
+                        <Input name="Amount" value={FormState.Contract.Amount} onchange={handleAmount} type={"number"}  />
                     </div>
                 </div>
 

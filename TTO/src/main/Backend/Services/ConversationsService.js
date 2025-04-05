@@ -21,6 +21,8 @@ export const SearchConversations = async (query) => {
          if (e === "Date") {
             List = List.filter((a) => a.Date === query[e])
          } else if (e === "Contract") {
+
+
             List = List.filter((a) => a.Contract.isContractSigned === query[e].isContractSigned)
              
             if (query[e].ContractType) {
