@@ -102,7 +102,7 @@ app.whenReady().then(async () => {
   })
 
   ipcMain.handle("SetOneConversation", async(event,req) => {
-    return await SetOneConversation(req)
+    return await SetOneConversation(req.data,req.id)
   })
 
   ipcMain.handle("GetOneConversation", async(event,userId) => {
