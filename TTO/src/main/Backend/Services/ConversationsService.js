@@ -92,10 +92,10 @@ export const SetOneConversation = async (data, id) => {
       await Conversations.findOneAndUpdate({
          _id: id
       }, data)
-      return true
+      return true;
    } catch (error) {
       console.log("error from SetOneConversation: ", error)
-      return false
+      return false;
    }
 }
 

@@ -81,10 +81,8 @@ const DataFilter = () => {
 
 
     const ReturnList = Data?.List.map((e, index) => {
-
         return (
             <tr className={`${index % 2 === 0 ? "text-white" : "text-black"}`} key={index}>
-
                 <td className='w-9'><button onClick={() => {
                     navigator.clipboard.writeText(e._id)
                     alert("kopyalandı")

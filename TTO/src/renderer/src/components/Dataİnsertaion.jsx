@@ -227,14 +227,12 @@ const Dataisertaion = () => {
     console.log(formState);
 
     return (
-        <form onSubmit={handleSubmit} className='w-full h-screen flex flex-col  justify-center items-center'>
-            <h1 className={`${isSuccees !== "" ? isSuccees ? "text-green-300" : "text-red-600" : "hidden"} text-xl font-bold`}>{isSuccees ? "KAYDEDİLDİ" : "HATTA OLUŞTU"}</h1>
-
-            <div className='flex  justify-center items-start flex-wrap  flex-row gap-2 border-2 border-green-400 w-3/4 h-3/4 rounded-lg'>
-                <Button variant="solid" color='success' className='mt-1' onPress={() => setisNew((e) => !e)} >{isNew ? "Yeni Veri" : "Eski veri"}</Button>
-                <div className='flex flex-row w-full items-center'>
-
-                    <div className='flex flex-col justify-start items-stretch w-full p-2 gap-2'>
+        <form onSubmit={handleSubmit} className='w-full h-screen flex flex-col px-6 py-4 justify-center items-center'>
+            <h1 className={`${isSuccees !== "" ? isSuccees ? "text-green-300" : "text-red-600" : "hidden"} text-xl font-bold`}>{isSuccees ? "KAYDEDİLDİ" : "HATA OLUŞTU"}</h1>
+            <div className='flex  justify-center flex-wrap flex-row gap-2 border-2 border-green-400 px-5 py-3 rounded-lg'>
+                <Button variant="solid" color='success' className='' onPress={() => setisNew((e) => !e)} >{isNew ? "Yeni Veri" : "Eski Veri"}</Button>
+                <div className='flex flex-row w-full'>
+                    <div className='flex flex-col items-stretch w-full p-2 gap-2'>
                         <h1 className='text-xl font-bold text-white'>Firma Bilgileri:</h1>
                         {isNew ? (
                             <Input
@@ -330,15 +328,15 @@ const Dataisertaion = () => {
 
                 </div>
 
-                <div className='flex flex-col justify-start items-center p-2 gap-2 flex-1'>
+                <div className='flex flex-col items-center p-2 gap-2'>
                     <h1 className='text-xl font-bold text-white'>Ana Bilgileri:</h1>
                     <div className='flex flex-row justify-center items-center gap-1'>
                         <Select
                             isRequired
-                            className="min-w-32"
+                            className=""
                             value={selectorAna}
                             label="Statu"
-                            placeholder="Statu Seçiniz"
+                            placeholder="Statü Seçiniz"
                             onChange={handleAna}
                         >
                             {
