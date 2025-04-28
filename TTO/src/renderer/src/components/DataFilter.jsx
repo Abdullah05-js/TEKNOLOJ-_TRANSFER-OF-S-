@@ -474,7 +474,7 @@ const DataFilter = () => {
                 endDate: ""
             }
             delete newFilter["Teklif"]
-        } 
+        }
 
 
         setFormState(newData)
@@ -500,19 +500,16 @@ const DataFilter = () => {
         } else {
             newData.Contract[name] = e.target.value
 
-            if(e.target.value)
-            {
-                if(newData.Contract.isContractSigned)
-                    {
-                        newFilter.Contract[name] = e.target.value
-                    }
-                    else{
-                        newFilter["Contract"] = {isContractSigned:true}
-                        newFilter["Contract"][name] = e.target.value
-                    }
+            if (e.target.value) {
+                if (newData.Contract.isContractSigned) {
+                    newFilter.Contract[name] = e.target.value
+                }
+                else {
+                    newFilter["Contract"] = { isContractSigned: true }
+                    newFilter["Contract"][name] = e.target.value
+                }
             }
-            else
-            {
+            else {
                 delete newFilter["Contract"]
             }
             newData.Teklif = {
@@ -532,23 +529,25 @@ const DataFilter = () => {
         const name = e.target.name
         const value = Number(e.target.value)
         newData.Contract[name] = e.target.value
-        if(value)
-            {
-                if(newData.Contract.isContractSigned)
-                    {
-                        newFilter.Contract[name] = value
-                    }
-                    else{
-                        newFilter["Contract"] = {isContractSigned:true}
-                        newFilter["Contract"][name] = value
-                    }
+        console.log(value, newFilter);
+        if (value) {
+            if (newData.Contract.isContractSigned) {
+                newFilter.Contract[name] = value
             }
-            else
-            {
-                delete newFilter["Contract"].Amount
+            else {
+                newFilter["Contract"] = { isContractSigned: true }
+                newFilter["Contract"][name] = value
             }
-            setFormState(newData)
-            setFilter(newFilter)
+        }
+        else if (newFilter["Contract"]?.ContractType) {
+            delete newFilter["Contract"].Amount
+        }
+        else {
+            delete newFilter["Contract"]
+        }
+
+        setFormState(newData)
+        setFilter(newFilter)
     }
 
 
@@ -711,9 +710,9 @@ const DataFilter = () => {
                         <h1 className='text-white   font-bold'>Teklif:</h1>
                         <input type="checkbox" name='Teklif' checked={FormState.Teklif.isTeklif} onChange={handleFilter} className='h-6 w-6 accent-green-300 ' />
                     </div>
-                           
+
                     <div>
-                        <Input name="Amount" value={FormState.Contract.Amount} onchange={handleAmount} type={"number"}  />
+                        <Input name="Amount" value={FormState.Contract.Amount} onchange={handleAmount} type={"number"} />
                     </div>
                 </div>
 
