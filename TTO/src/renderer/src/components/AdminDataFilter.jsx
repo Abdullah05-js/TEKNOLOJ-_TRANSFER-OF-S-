@@ -58,30 +58,20 @@ const AdminDataFilter = () => {
   }
 
   const handleSubmit = async () => {
+    let updatedForm = { ...dataForm };
     if(customContractType){
-      setDataForm(prev => ({
-        ...prev,
-        Contract: {
-          ...prev.Contract,
-          ContractType: customContractType
-        }
-      }));
+      updatedForm.Contract.ContractType = customContractType;
     }
 
     if(tubitakCode){
-      setDataForm(prev => ({
-        ...prev,
-        Contract: {
-          ...prev.Contract,
-          ContractType: `TÜBİTAK, ${tubitakCode}`
-        }
-      }));
+      console.log("tübitak kodu var")
+      updatedForm.Contract.ContractType = `TÜBİTAK, ${tubitakCode}`
     }
 
     console.log(data);
     console.log(dataForm);
 
-    
+    setDataForm(updatedForm);
 
     const response = await window.electron.ipcRenderer.invoke('SetOneConversation', {
       data: dataForm,
