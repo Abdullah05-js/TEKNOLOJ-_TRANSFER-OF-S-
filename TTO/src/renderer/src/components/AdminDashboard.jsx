@@ -11,8 +11,8 @@ const AdminDashboard = () => {
             <div className='text-white items-center w-[60%]'>
                 <h1 className='text-center mb-8 text-3xl'>Admin Paneli</h1>
                 <nav className='flex border-2 border-white'>
-                    <button className={`${subPage == 'signUpUser' ? 'bg-white text-black' : '' } w-1/3 py-1`} onClick={() => setSubPage("signUpUser")}>Kullanıcı Ekle</button>
-                    <button className={`${subPage == 'users' ? 'bg-white text-black' : '' } w-1/3 py-1`} onClick={() => setSubPage("users")}>Kullanıcılar</button>
+                    <button className={`${subPage == 'signUpUser' ? 'bg-white text-black' : '' } w-1/3 py-1 border-r-1 border-gray-300`} onClick={() => setSubPage("signUpUser")}>Kullanıcı Ekle</button>
+                    <button className={`${subPage == 'users' ? 'bg-white text-black' : '' } w-1/3 py-1 border-r-1 border-gray-300`} onClick={() => setSubPage("users")}>Kullanıcılar</button>
                     <button className={`${subPage == 'allDatas' ? 'bg-white text-black' : '' } w-1/3 py-1`} onClick={() => setSubPage("allDatas")}>Bütün İşlemler</button>
                 </nav>
             </div>
