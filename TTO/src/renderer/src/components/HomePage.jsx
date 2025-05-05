@@ -22,7 +22,7 @@ const HomePage = () => {
                 setTodos(data)
             } catch (error) {
                 console.log(error);
-                setİsloading(false)
+                setİsloading(false);
             }
         })()
     }, []);
@@ -43,7 +43,7 @@ const HomePage = () => {
                             <li className='flex gap-2 justify-center items-start shadow-inner flex-col border border-white text-white rounded-xl px-6 py-4'>
                                 <h2 className='text-center w-full text-lg text-green-300'>Görev Açıklaması</h2>
                                 <h2 className='font-bold break-words text-medium leading-loose'>{e.description}</h2>
-                                <p className='font-bold break-words text-medium self-end pr-10 text-green-700'>Son gün {(new Date(e.deadline)).toLocaleDateString()}</p>
+                                <p className='font-bold break-words text-medium self-end pr-10 text-green-700'>Son gün: <span className='text-green-400'>{(new Date(e.deadline)).toLocaleDateString()}</span></p>
                             </li>
                         )
                     })

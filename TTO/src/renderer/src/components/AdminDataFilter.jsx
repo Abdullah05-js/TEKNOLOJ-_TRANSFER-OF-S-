@@ -11,9 +11,13 @@ const AdminDataFilter = () => {
   const [akademiks, setAkademiks] = useState(null);
   const [users, setUsers] = useState(null);
   const [companies, setCompanies] = useState(null);
-  const [isTubitak, setIsTubitak] = useState(dataForm?.Contract.ContractType.includes("TÜBİTAK"));
   const [customContractType, setCustomContractType] = useState(null);
   const [tubitakCode, setTubitakCode] = useState(null);
+  const [updateConfirmWaiting, setUpdateConfirmWaiting] = useState(false);
+  const [updatedConfirmed, setUpdateConfirmed] = useState(false);
+  const [deleteConfirmWaiting, setDeleteConfirmWaiting] = useState(false);
+  const [deleteConfirmed, setDeleteConfirmed] = useState(false);
+  const [message, setMessage] = useState(null);
 
   const getAcademicsAndCompanies = async () => {
     try {
@@ -26,6 +30,21 @@ const AdminDataFilter = () => {
     }
   }
 
+  const resetStates = () => {
+    setData(null);
+    setDataForm(null);
+    setId(null);
+    setIsDataFound(false);
+    setIsSearched(false);
+    setUpdate(false);
+    setCustomContractType(null);
+    setTubitakCode(null);
+    setUpdateConfirmWaiting(false);
+    setUpdateConfirmed(false);
+    setDeleteConfirmWaiting(false);
+    setDeleteConfirmed(false);
+  };
+
   useEffect(() => {
     const fetchAllData = async () => {
       const response = await window.electron.ipcRenderer.invoke('GetSelectors', "");
@@ -35,21 +54,36 @@ const AdminDataFilter = () => {
     };
 
     fetchAllData();
-
-
   }, []);
 
-  const handleTubitakCode = (e)=> {
+  useEffect(() => {
+    if (updatedConfirmed) {
+      handleSubmit();
+    }
+    return () => { };
+  }, [updatedConfirmed])
+
+  useEffect(() => {
+    if (deleteConfirmed) {
+      console.log("kayıt silindi");
+    }
+    return () => { };
+  }, [deleteConfirmed]);
+
+  const handleTubitakCode = (e) => {
     setTubitakCode(e.target.value);
   }
 
   const handleUpdateChange = () => {
     if (!update) {
       setUpdate(true);
-      if(dataForm.Contract.ContractType.includes("TÜBİTAK")){
-        console.log("girdi")
+      if (dataForm.Contract.ContractType.includes("TÜBİTAK")) {
         const code = dataForm.Contract.ContractType.split(",");
         setTubitakCode(parseInt(code[1].trim()));
+      }
+
+      if (dataForm.Contract.ContractType !== "ÖZKAYNAK" && dataForm.Contract.ContractType !== "PROJE YAZMA" && dataForm.Contract.ContractType !== "TEKNOPARK" && !dataForm.Contract.ContractType.includes("TÜBİTAK")) {
+        setCustomContractType(dataForm.Contract.ContractType);
       }
     }
     else {
@@ -58,18 +92,22 @@ const AdminDataFilter = () => {
   }
 
   const handleSubmit = async () => {
-    let updatedForm = { ...dataForm };
-    if(customContractType){
-      updatedForm.Contract.ContractType = customContractType;
+    console.log("girdi.");
+    console.log(updatedConfirmed);
+    if (!updatedConfirmed) {
+      return;
     }
-
-    if(tubitakCode){
-      console.log("tübitak kodu var")
+    console.log("giremedi:");
+    let updatedForm = { ...dataForm };
+    if (tubitakCode) {
+      console.log("tübitak kodu var");
       updatedForm.Contract.ContractType = `TÜBİTAK, ${tubitakCode}`
     }
 
-    console.log(data);
-    console.log(dataForm);
+    if (customContractType) {
+      console.log(customContractType);
+      updatedForm.Contract.ContractType = customContractType;
+    }
 
     setDataForm(updatedForm);
 
@@ -77,7 +115,12 @@ const AdminDataFilter = () => {
       data: dataForm,
       id: id
     });
-    console.log(response);
+
+    if(response){
+      setMessage("Kayıt başarıyla güncellendi.");
+      resetStates();
+    }
+
   };
 
   const handleChange = (e) => {
@@ -93,7 +136,7 @@ const AdminDataFilter = () => {
       [e.target.name]: e.target.value === 'true' ? true : e.target.value === 'false' ? false : e.target.value
     };
 
-    if(e.target.name === "AcademicNames"){
+    if (e.target.name === "AcademicNames") {
       updatedForm.Academics.AcademicNames = e.target.value;
     }
 
@@ -118,7 +161,6 @@ const AdminDataFilter = () => {
         setData(responseData);
         setDataForm(responseData);
         setIsDataFound(true);
-
       }
       else {
         setIsDataFound(false);
@@ -128,13 +170,19 @@ const AdminDataFilter = () => {
 
   return (
     <div className='flex flex-col items-center gap-6s overflow-y-auto scrollbar-hide'>
-      <div className='flex flex-col items-center gap-2 justify-center text-white'>
-        <label htmlFor="dataId">Aramak istediğiniz kayıtın Id sini girin.</label>
-        <div className="flex gap-2">
-          <input onChange={(e) => setId(e.target.value)} className="text-black px-2 rounded-sm" type="text" name="dataId" id="dataId" placeholder='Kayıt Id' />
-          <button className="rounded-sm bg-black border-1 border-white text-white font-medium px-3 hover:bg-white hover:text-black transition-colors duration-200 ease-in-out" onClick={handleSearch}>Ara</button>
+      {(!isSearched || !isDataFound) && (
+        <div className='flex flex-col items-center gap-2 justify-center text-white'>
+          <label htmlFor="dataId">Aramak istediğiniz kayıtın Id sini girin.</label>
+          <div className="flex gap-2">
+            <input onChange={(e) => setId(e.target.value)} className="text-black px-2 py-1 rounded-sm focus:outline-gray-100" type="text" name="dataId" id="dataId" placeholder='Kayıt Id' />
+            <button className="rounded-sm bg-black border-1 border-white text-white font-medium px-5 hover:bg-white hover:text-black transition-colors duration-200 ease-in-out" onClick={()=> {
+              handleSearch();
+              setMessage(null);
+            }}>Ara</button>
+          </div>
         </div>
-      </div>
+      )}
+
       {isSearched && isDataFound && !update && (
         <div className="flex flex-col gap-3 border-2 rounded-md border-gray-400 px-7 py-5 text-white shadow-white my-8 w-[600px]">
           <div>
@@ -180,11 +228,11 @@ const AdminDataFilter = () => {
                 </section>
                 <section>
                   <h4 className='text-green-500'>Sözleşme Başlangıç</h4>
-                  <p>{dataForm.Contract.startDate}</p>
+                  <p>{new Date(dataForm.Contract.startDate).toLocaleDateString()}</p>
                 </section>
                 <section>
                   <h4 className='text-green-500'>Sözleşme Bitiş</h4>
-                  <p>{dataForm.Contract.endDate}</p>
+                  <p>{new Date(dataForm.Contract.endDate).toLocaleDateString()}</p>
                 </section>
               </>
             )}
@@ -223,12 +271,16 @@ const AdminDataFilter = () => {
         </div>
       )}
 
-      {!isSearched && (
-        <p className='mt-10 text-white'>Herhangi bir kayıdın detayı sorgulanmadı.</p>
+      {!isSearched && message === null &&  (
+        <p className='mt-10 text-white'>Herhangi bir kaydın detayı sorgulanmadı.</p>
       )}
 
       {!isDataFound && isSearched && (
         <p className='mt-10 text-white'>Kayıt Bulunamadı.</p>
+      )}
+
+      { message && (
+        <p className='mt-10 text-white'>{message}</p>
       )}
 
       {update && (
@@ -333,11 +385,11 @@ const AdminDataFilter = () => {
                         ContractType: e.target.value
                       }
                     }));
-                    if(e.target.value !== "Diğer"){
+                    if (e.target.value !== "Diğer") {
                       setCustomContractType(null);
                       setTubitakCode(null);
                     };
-                  }} value={dataForm.Contract.ContractType} className='text-black w-[155px] px-2 py-1 rounded-md cursor-pointer outline-blue-400'>
+                  }} value={customContractType ? "Diğer" : dataForm.Contract.ContractType} className='text-black w-[155px] px-2 py-1 rounded-md cursor-pointer outline-blue-400'>
                     {
                       ["TÜBİTAK", "ÖZKAYNAK", "PROJE YAZMA", "TEKNOPARK", "Diğer"].map((item) => (
                         <option value={item} key={item}>
@@ -347,18 +399,18 @@ const AdminDataFilter = () => {
                     }
                   </select>
                 </section>
-                {dataForm.Contract.ContractType.includes("TÜBİTAK")  && (
+                {dataForm.Contract.ContractType.includes("TÜBİTAK") && (
                   <section>
                     <h4 className='text-green-500 mb-2'>Kod</h4>
-                    <input value={tubitakCode} placeholder='KOD' required onChange={(e)=> handleTubitakCode(e)} type="number" className='text-black w-[155px] px-2 py-1 rounded-md cursor-pointer outline-blue-400' />
+                    <input value={tubitakCode} placeholder='KOD' required onChange={(e) => handleTubitakCode(e)} type="number" className='text-black w-[155px] px-2 py-1 rounded-md cursor-pointer outline-blue-400' />
                   </section>
                 )
                 }
 
-                {dataForm.Contract.ContractType === "Diğer" && (
+                {(customContractType || dataForm.Contract.ContractType === "Diğer") && (
                   <section>
                     <h4 className='text-green-500 mb-2'>Sözleşme Türü</h4>
-                    <input placeholder='Sözleşme Tipi' type="text" onChange={(e)=> setCustomContractType(e.target.value)} className='text-black w-[155px] px-2 py-1 rounded-md cursor-pointer outline-blue-400' />
+                    <input value={customContractType} placeholder='Sözleşme Tipi' type="text" onChange={(e) => setCustomContractType(e.target.value)} className='text-black w-[155px] px-2 py-1 rounded-md cursor-pointer outline-blue-400' />
                   </section>
                 )}
                 <section>
@@ -393,7 +445,7 @@ const AdminDataFilter = () => {
                 </section>
               </>
             )}
-            
+
             <section>
               <p className='text-green-500'>Tarih</p>
               <p className='text-white'>{dataForm.Date}</p>
@@ -406,8 +458,80 @@ const AdminDataFilter = () => {
 
           </div>
           <div className='text-center mt-5'>
-            <button onClick={handleSubmit} className='border-1 px-5 py-2 text-white rounded-md hover:bg-white hover:text-black duration-200 transition-colors ease-in-out'>{update ? 'Güncellemeyi Tamamla' : 'Güncelle'}</button>
-            <button className=' ml-5 border-1 px-5 py-2 text-white rounded-md hover:bg-white hover:text-black duration-200 transition-colors ease-in-out'>Kaydı Sil</button>
+            <button onClick={() => {
+              setUpdateConfirmWaiting(true);
+            }} className='border-1 px-5 py-2 text-white rounded-md hover:bg-white hover:text-black duration-200 transition-colors ease-in-out'>Güncellemeyi Tamamla</button>
+            <button onClick={() => setDeleteConfirmWaiting(true)} className=' ml-5 border-1 px-5 py-2 text-white rounded-md hover:bg-white hover:text-black duration-200 transition-colors ease-in-out'>Kaydı Sil</button>
+          </div>
+        </div>
+      )}
+
+      {updateConfirmWaiting && (
+        <div className="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+          <div className="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
+
+          <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+              <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                  <div className="sm:flex sm:items-start">
+                    <div className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
+                      <svg className="size-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                      </svg>
+                    </div>
+                    <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                      <h3 className="text-base font-semibold text-gray-900" id="modal-title">Dikkat!</h3>
+                      <div className="mt-2">
+                        <p className="text-sm text-gray-500">Kayıtı güncellemek istediğinizden emin misiniz?</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                  <button type="button" className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto" onClick={() => {
+                    setUpdateConfirmed(true);
+                    setUpdateConfirmWaiting(false);
+                  }}>Güncelle</button>
+                  <button type="button" className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto" onClick={() => setUpdateConfirmWaiting(false)}>Vazgeç</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteConfirmWaiting && (
+        <div className="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+          <div className="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
+
+          <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+              <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                  <div className="sm:flex sm:items-start">
+                    <div className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
+                      <svg className="size-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                      </svg>
+                    </div>
+                    <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                      <h3 className="text-base font-semibold text-gray-900" id="modal-title">Dikkat!</h3>
+                      <div className="mt-2">
+                        <p className="text-sm text-gray-500">Kaydı silmek istediğinizden emin misiniz?</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                  <button type="button" className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto" onClick={() => {
+                    setDeleteConfirmed(true);
+                    setDeleteConfirmWaiting(false);
+                  }}>Sil</button>
+                  <button type="button" className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto" onClick={() => setDeleteConfirmWaiting(false)}>Vazgeç</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

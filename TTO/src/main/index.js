@@ -14,7 +14,7 @@ import { Buffer } from 'buffer'
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1200,
+    width: 1300,
     height: 800,
     icon: icon,
     show: false,

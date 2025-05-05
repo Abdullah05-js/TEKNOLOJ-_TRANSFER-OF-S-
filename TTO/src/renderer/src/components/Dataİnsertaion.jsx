@@ -230,7 +230,7 @@ const Dataisertaion = () => {
         <form onSubmit={handleSubmit} className='w-full h-screen flex flex-col px-6 py-4 justify-center items-center'>
             <h1 className={`${isSuccees !== "" ? isSuccees ? "text-green-300" : "text-red-600" : "hidden"} text-xl font-bold`}>{isSuccees ? "KAYDEDİLDİ" : "HATA OLUŞTU"}</h1>
             <div className='flex  justify-center flex-wrap flex-row gap-2 border-2 border-green-400 px-5 py-3 rounded-lg'>
-                <Button variant="solid" color='success' className='' onPress={() => setisNew((e) => !e)} >{isNew ? "Yeni Veri" : "Eski Veri"}</Button>
+                <Button variant="solid" color='success' className='' onPress={() => setisNew((e) => !e)} >{isNew ? "Eski Veri" : "Yeni Veri"}</Button>
                 <div className='flex flex-row w-full'>
                     <div className='flex flex-col items-stretch w-full p-2 gap-2'>
                         <h1 className='text-xl font-bold text-white'>Firma Bilgileri:</h1>
@@ -323,14 +323,14 @@ const Dataisertaion = () => {
                                 </Select>
                             )
                         }
-                        <input type="date" value={formState.Date} onChange={(e) => setFormState({ ...formState, Date: e.target.value })} className='p-2 border-3 w-4/5  bg-white border-green-400 focus:outline-none rounded-lg font-bold' />
+                        <input type="date" value={formState.Date} onChange={(e) => setFormState({ ...formState, Date: e.target.value })} className='max-w-xs p-2 border-3 bg-white border-green-400 focus:outline-none rounded-lg font-bold' />
                     </div>
 
                 </div>
 
-                <div className='flex flex-col items-center p-2 gap-2'>
-                    <h1 className='text-xl font-bold text-white'>Ana Bilgileri:</h1>
-                    <div className='flex flex-row justify-center items-center gap-1'>
+                <div className='flex flex-col items-center p-2 gap-2 w-full'>
+                    <h1 className='text-xl font-bold text-white'>Ana Bilgileri</h1>
+                    <div className='flex flex-row justify-center items-center gap-1 w-80'>
                         <Select
                             isRequired
                             className=""
@@ -348,104 +348,119 @@ const Dataisertaion = () => {
                     </div>
 
                     {formState.Teklif.isTeklif && (
-                        <>
-                            <label className='text-white'>Başlangıç</label>
-                            <input
-                                type="date"
-                                value={formState.Teklif.startDate}
-                                onChange={(e) =>
-                                    setFormState({
-                                        ...formState,
-                                        Teklif: { ...formState.Teklif, startDate: e.target.value }
-                                    })
-                                }
-                                className="p-2 border-3 w-4/5 bg-white border-green-400 focus:outline-none rounded-lg font-bold"
-                            />
-                            <label className='text-white'>Bitiş</label>
-                            <input
-                                type="date"
-                                value={formState.Teklif.endDate}
-                                onChange={(e) =>
-                                    setFormState({
-                                        ...formState,
-                                        Teklif: { ...formState.Teklif, endDate: e.target.value }
-                                    })
-                                }
-                                className="p-2 border-3 w-4/5 bg-white border-green-400 focus:outline-none rounded-lg font-bold"
-                            />
-                        </>
+                        <div className='flex flex-row gap-5 items-center justify-center'>
+                            <div className='flex flex-col'>
+                                <label className='text-white mb-1'>Başlangıç</label>
+                                <input
+                                    type="date"
+                                    value={formState.Teklif.startDate}
+                                    onChange={(e) =>
+                                        setFormState({
+                                            ...formState,
+                                            Teklif: { ...formState.Teklif, startDate: e.target.value }
+                                        })
+                                    }
+                                    className="p-2 border-3 bg-white border-green-400 focus:outline-none rounded-lg font-bold"
+                                />
+                            </div>
+                            <div className='flex flex-col'>
+                                <label className='text-white mb-1'>Bitiş</label>
+                                <input
+                                    type="date"
+                                    value={formState.Teklif.endDate}
+                                    onChange={(e) =>
+                                        setFormState({
+                                            ...formState,
+                                            Teklif: { ...formState.Teklif, endDate: e.target.value }
+                                        })
+                                    }
+                                    className="p-2 border-3 bg-white border-green-400 focus:outline-none rounded-lg font-bold"
+                                />
+                            </div>
+                        </div>
                     )}
 
                     {formState.Contract.isContractSigned && (
-                        <div className='flex flex-row w-full gap-1'>
-                            <div className='flex flex-col w-full justify-center items-center gap-2'>
-                                <input
-                                    type="date"
-                                    value={formState.Contract.startDate}
-                                    onChange={(e) =>
-                                        setFormState({
-                                            ...formState,
-                                            Contract: { ...formState.Contract, startDate: e.target.value }
-                                        })
-                                    }
-                                    className="p-2 border-3 w-4/5 bg-white border-green-400 focus:outline-none rounded-lg font-bold"
-                                />
-                                <input
-                                    type="date"
-                                    value={formState.Contract.endDate}
-                                    onChange={(e) =>
-                                        setFormState({
-                                            ...formState,
-                                            Contract: { ...formState.Contract, endDate: e.target.value }
-                                        })
-                                    }
-                                    className="p-2 border-3 w-4/5 bg-white border-green-400 focus:outline-none rounded-lg font-bold"
-                                />
+                        <div className='flex flex-row w-4/5 gap-1'>
+                            <div className='flex flex-col w-1/2 items-center gap-2'>
+                                <div className='flex flex-col w-4/5 gap-1'>
+                                    <label className='text-white'>Başlangıç</label>
+                                    <input
+                                        type="date"
+                                        value={formState.Contract.startDate}
+                                        onChange={(e) =>
+                                            setFormState({
+                                                ...formState,
+                                                Contract: { ...formState.Contract, startDate: e.target.value }
+                                            })
+                                        }
+                                        className="p-2 border-3 bg-white border-green-400 focus:outline-none rounded-lg font-bold"
+                                    />
+                                </div>
+                                <div className='flex flex-col w-4/5 gap-1'>
+                                    <label className='text-white'>Bitiş</label>
+                                    <input
+                                        type="date"
+                                        value={formState.Contract.endDate}
+                                        onChange={(e) =>
+                                            setFormState({
+                                                ...formState,
+                                                Contract: { ...formState.Contract, endDate: e.target.value }
+                                            })
+                                        }
+                                        className="p-2 border-3 bg-white border-green-400 focus:outline-none rounded-lg font-bold"
+                                    />
+                                </div>
                             </div>
-                            <div className='flex flex-col w-full justify-center items-center gap-2'>
-                                <input
-                                    value={formState.Contract.Amount}
-                                    onChange={(e) => setFormState({ ...formState, Contract: { ...formState.Contract, Amount: e.target.value.trim() } })}
-                                    placeholder="0"
-                                    type="number"
-                                    className='rounded-lg p-2 w-full'
-                                />
-                                <Select
-                                    isRequired
-                                    className="min-w-32"
-                                    value={formState.Contract.ContractType}
-                                    label="Sözleşme Tipi"
-                                    placeholder="Sözleşme Tipi Seçiniz"
-                                    onChange={handleContractTpye}
-                                >
-                                    {
-                                        ["TÜBİTAK", "ÖZKAYNAK", "PROJE YAZMA", "TEKNOPARK", "Diğer"].map((e) => {
-                                            return <SelectItem key={e}>{e}</SelectItem>
-                                        })
-                                    }
-                                </Select>
-                                {isDiger && (
-                                    <Input
-                                        label="Diğer"
+                            <div className='flex flex-col w-1/2 justify-center items-center mt-1'>
+                                <div className='flex flex-col w-[90%] gap-6'>
+                                    <div className='flex flex-col gap-1 w-full'>
+                                        <label className='text-white text-[15px]'>Sözleşme Tutarı</label>
+                                        <input
+                                            value={formState.Contract.Amount}
+                                            onChange={(e) => setFormState({ ...formState, Contract: { ...formState.Contract, Amount: e.target.value.trim() } })}
+                                            placeholder="0"
+                                            type="number"
+                                            className='rounded-lg px-2 py-[10px]  w-full'
+                                        />
+                                    </div>
+                                    <Select
+                                        isRequired
+                                        className="min-w-32"
                                         value={formState.Contract.ContractType}
-                                        onChange={(e) => setFormState({ ...formState, Contract: { ...formState.Contract, ContractType: e.target.value.toUpperCase() } })}
-                                        className="max-w-xs font-bold"
-                                        placeholder={"Diğer türler"}
-                                        type="text"
-                                        variant="flat"
-                                    />
-                                )}
-                                {isTUBİTAK && (
-                                    <Input
-                                        label="KOD"
-                                        value={formState.Contract.ContractType}
-                                        onChange={(e) => setFormState({ ...formState, Contract: { ...formState.Contract, ContractType: e.target.value.toUpperCase().trim() } })}
-                                        className="max-w-xs font-bold"
-                                        placeholder={"TÜBİTAK Kodu"}
-                                        type="text"
-                                        variant="flat"
-                                    />
-                                )}
+                                        label="Sözleşme Tipi"
+                                        placeholder="Sözleşme Tipi Seçiniz"
+                                        onChange={handleContractTpye}
+                                    >
+                                        {
+                                            ["TÜBİTAK", "ÖZKAYNAK", "PROJE YAZMA", "TEKNOPARK", "Diğer"].map((e) => {
+                                                return <SelectItem key={e}>{e}</SelectItem>
+                                            })
+                                        }
+                                    </Select>
+                                    {isDiger && (
+                                        <Input
+                                            label="Diğer"
+                                            value={formState.Contract.ContractType}
+                                            onChange={(e) => setFormState({ ...formState, Contract: { ...formState.Contract, ContractType: e.target.value.toUpperCase() } })}
+                                            className="font-bold"
+                                            placeholder={"Diğer türler"}
+                                            type="text"
+                                            variant="flat"
+                                        />
+                                    )}
+                                    {isTUBİTAK && (
+                                        <Input
+                                            label="KOD"
+                                            value={formState.Contract.ContractType}
+                                            onChange={(e) => setFormState({ ...formState, Contract: { ...formState.Contract, ContractType: e.target.value.toUpperCase().trim() } })}
+                                            className="font-bold"
+                                            placeholder={"TÜBİTAK Kodu"}
+                                            type="text"
+                                            variant="flat"
+                                        />
+                                    )}
+                                </div>
                             </div>
                         </div>
                     )}
@@ -453,13 +468,13 @@ const Dataisertaion = () => {
                         label="Açıklama"
                         value={formState.ConversationDetails}
                         onChange={(e) => setFormState({ ...formState, ConversationDetails: e.target.value })}
-                        className="max-w-xs font-bold"
+                        className="max-w-xs font-bold mt-2"
                         type="text"
                         variant="flat"
                     />
                 </div>
             </div>
-            <Button type="submit" variant='solid' className='mt-2 text-black font-bold border-2 bg-white border-green-300 p-3 rounded-xl'>Kaydet</Button>
+            <Button type="submit" variant='solid' className='mt-5 text-black font-bold border-2 bg-white border-green-300 p-3 rounded-xl'>Kaydet</Button>
 
         </form>
     );
