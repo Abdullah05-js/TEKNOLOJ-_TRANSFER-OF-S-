@@ -3,9 +3,9 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import connectDB from './Backend/DB/ConnectDB'
-import { AuthUser, CreateAcccount , DeleteUser , GetUsers , UpdatePassword, GetAllUserNames} from './Backend/Services/UsersService.js'
-import { SearchConversations, SetConversation, GetSelectors, GetConversations , SetOneConversation , GetOneConversation, getAllComponeyNamesAndAcademics} from "./Backend/Services/ConversationsService.js"
-import { CreateTodo, GetUserTodos, UpdateTodoStatus, DeleteTodo, getTodoForDate ,deleteAll } from "./Backend/Services/TodoService.js"
+import { AuthUser, CreateAcccount, DeleteUser, GetUsers, UpdatePassword, GetAllUserNames } from './Backend/Services/UsersService.js'
+import { DeleteConversationById, SearchConversations, SetConversation, GetSelectors, GetConversations, SetOneConversation, GetOneConversation, getAllComponeyNamesAndAcademics } from "./Backend/Services/ConversationsService.js"
+import { CreateTodo, GetUserTodos, UpdateTodoStatus, DeleteTodo, getTodoForDate, deleteAll } from "./Backend/Services/TodoService.js"
 import path from 'path'
 import fs from 'fs'
 import { Buffer } from 'buffer'
@@ -85,7 +85,7 @@ app.whenReady().then(async () => {
     return await AuthUser(data);
   })
 
-  ipcMain.handle("signup",async (event,data) =>{
+  ipcMain.handle("signup", async (event, data) => {
     return await CreateAcccount(data);
   })
 
@@ -93,34 +93,34 @@ app.whenReady().then(async () => {
     return await SearchConversations(data);
   })
 
-  ipcMain.handle("GetAllUserNames",async(event,date) => {
+  ipcMain.handle("GetAllUserNames", async (event, date) => {
     return await GetAllUserNames();
   })
 
-  ipcMain.handle("UpdatePassword",async (event,data) => {
-    return await UpdatePassword(data.id,data.newPassWord)
+  ipcMain.handle("UpdatePassword", async (event, data) => {
+    return await UpdatePassword(data.id, data.newPassWord)
   })
 
-  ipcMain.handle("SetOneConversation", async(event,req) => {
-    return await SetOneConversation(req.data,req.id)
+  ipcMain.handle("SetOneConversation", async (event, req) => {
+    return await SetOneConversation(req.data, req.id)
   })
 
-  ipcMain.handle("GetOneConversation", async(event,userId) => {
+  ipcMain.handle("GetOneConversation", async (event, userId) => {
     return await GetOneConversation(userId)
   })
   ipcMain.handle("SetConversation", async (event, data) => {
     return await SetConversation(data);
   })
 
-  ipcMain.handle("DeleteUser",async(event,data) => {
+  ipcMain.handle("DeleteUser", async (event, data) => {
     return await DeleteUser(data)
   })
 
-  ipcMain.handle("getAllComponeyNamesAndAcademics",async(event,data) => {
+  ipcMain.handle("getAllComponeyNamesAndAcademics", async (event, data) => {
     return await getAllComponeyNamesAndAcademics()
   })
 
-  ipcMain.handle("GetAllUser",async(event,data) => {
+  ipcMain.handle("GetAllUser", async (event, data) => {
     return await GetUsers();
   })
 
@@ -146,12 +146,12 @@ app.whenReady().then(async () => {
         return e
       }
     })
-    console.log("----------\n",ReturnList);
+    console.log("----------\n", ReturnList);
     return ReturnList;
   })
 
-  ipcMain.handle("getPaginition",async (event,length) => {
-    return Math.ceil(length/15) === 0 ? 1 : Math.ceil(length/15)
+  ipcMain.handle("getPaginition", async (event, length) => {
+    return Math.ceil(length / 15) === 0 ? 1 : Math.ceil(length / 15)
   })
 
   ipcMain.handle("GetFilter", async (event, data) => {
@@ -197,10 +197,9 @@ app.whenReady().then(async () => {
     return Data
   })
 
-
-  
-
-
+  ipcMain.handle("deleteConversationById", async (event, data) => {
+    return DeleteConversationById(data.id)
+  })
 
   // Todo handlers
   ipcMain.handle("CreateTodo", async (event, data) => {
@@ -210,7 +209,7 @@ app.whenReady().then(async () => {
 
   ipcMain.handle("GetUserTodos", async (event, userId) => {
     return await GetUserTodos();
-   //return await deleteAll()
+    //return await deleteAll()
   })
 
   ipcMain.handle("UpdateTodoStatus", async (event, { todoId, completed }) => {

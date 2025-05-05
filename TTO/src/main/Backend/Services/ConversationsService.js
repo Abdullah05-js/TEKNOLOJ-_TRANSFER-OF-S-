@@ -24,10 +24,10 @@ export const SearchConversations = async (query) => {
 
 
             List = List.filter((a) => a.Contract.isContractSigned === query[e].isContractSigned)
-             
+
             if (query[e].ContractType) {
-               List = List.filter((a) =>{
-                  return  a.Contract.ContractType.includes(query.Contract.ContractType)
+               List = List.filter((a) => {
+                  return a.Contract.ContractType.includes(query.Contract.ContractType)
                })
             }
 
@@ -80,7 +80,7 @@ export const SearchConversations = async (query) => {
 
       const end = page * 15;
       const start = end - 15;
-      return JSON.stringify({ List: [...List].splice(start, end), TotalPages: Math.ceil(List.length / 15) === 0 ? 1 : Math.ceil(List.length / 15) , AllList:[...List]}) // i did this becouse i got som error the _id was coming as a buffer
+      return JSON.stringify({ List: [...List].splice(start, end), TotalPages: Math.ceil(List.length / 15) === 0 ? 1 : Math.ceil(List.length / 15), AllList: [...List] }) // i did this becouse i got som error the _id was coming as a buffer
    } catch (error) {
       console.log("error from SearchConversations: ", error);
       return []
@@ -200,6 +200,18 @@ export const GetSelectors = async () => {
    } catch (error) {
       console.log("error from SearchUser:", error);
       return Data
+   }
+}
+
+export const DeleteConversationById = async (convId) => {
+   try {
+
+      const DeletedConversation = await Conversations.findByIdAndDelete(convId)
+      if (DeletedConversation) return false;
+      return true
+   } catch (error) {
+      console.log("error from DeleteConversationById: ", error);
+      return false
    }
 }
 
