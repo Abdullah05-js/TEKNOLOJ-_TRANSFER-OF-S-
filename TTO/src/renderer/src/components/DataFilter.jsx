@@ -81,6 +81,20 @@ const DataFilter = () => {
 		getFilter()
 	}, [Filter])
 
+	useEffect(()=> {
+		let isAllTrue = true;
+		Object.keys(TableHeaders).forEach(key => {
+			if(TableHeaders[key] === false){
+				isAllTrue = false;
+			}
+		  });
+
+		  if(isAllTrue){
+			setisAll(true);
+		  }else{
+			setisAll(false);
+		  }
+	}, [TableHeaders])
 
 
 	const ReturnList = Data?.List.map((e, index) => {
@@ -392,7 +406,6 @@ const DataFilter = () => {
 	}
 
 	const handleisAll = (e) => {
-
 		if (e.target.checked) {
 			setisAll(true)
 			setTableHeaders({
@@ -623,7 +636,7 @@ const DataFilter = () => {
 						</div>
 
 						<div className='flex justify-between items-center gap-1 '>
-							<h1 className='text-white   font-bold'>iş Geliştirme:</h1>
+							<h1 className='text-white   font-bold'>İş Geliştirme:</h1>
 							<input type="checkbox" name='isGelistirme' checked={TableHeaders.isGelistirme} onChange={(e) => setTableHeaders({ ...TableHeaders, isGelistirme: e.target.checked })} className='h-4 w-4 accent-green-300 ' />
 						</div>
 

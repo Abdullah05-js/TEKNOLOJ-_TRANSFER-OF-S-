@@ -65,7 +65,7 @@ const AdminDataFilter = () => {
 
   useEffect(() => {
     if (deleteConfirmed) {
-      console.log("kayıt silindi");
+      handleDelete();
     }
     return () => { };
   }, [deleteConfirmed]);
@@ -88,6 +88,16 @@ const AdminDataFilter = () => {
     }
     else {
       setUpdate(false);
+    }
+  }
+
+  const handleDelete = async () => {
+    const response = await window.electron.ipcRenderer.invoke('deleteConversationById', {
+      id: id
+    });
+    if(response){
+      setMessage("Kayıt başarıyla silindi.");
+      resetStates();
     }
   }
 

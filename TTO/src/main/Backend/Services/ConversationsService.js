@@ -205,10 +205,9 @@ export const GetSelectors = async () => {
 
 export const DeleteConversationById = async (convId) => {
    try {
-
-      const DeletedConversation = await Conversations.findByIdAndDelete(convId)
-      if (DeletedConversation) return false;
-      return true
+      const DeletedConversation = await Conversations.findByIdAndDelete(convId);
+      if (DeletedConversation) return true;
+      return false
    } catch (error) {
       console.log("error from DeleteConversationById: ", error);
       return false

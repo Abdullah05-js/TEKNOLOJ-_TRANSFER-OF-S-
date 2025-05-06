@@ -198,7 +198,7 @@ app.whenReady().then(async () => {
   })
 
   ipcMain.handle("deleteConversationById", async (event, data) => {
-    return DeleteConversationById(data.id)
+    return await DeleteConversationById(data.id)
   })
 
   // Todo handlers
